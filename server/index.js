@@ -2,6 +2,7 @@ import {Server} from 'hapi'
 import Logger from '@modulus/logger'
 
 import Config from '../config'
+import Routes from './routes'
 
 let logger = Logger('server/index')
 let server = new Server()
@@ -18,6 +19,8 @@ server.start((err) => {
   }
 
   logger.info(`Server starting at ${server.info.uri}`)
+
+  server.route(Routes)
 })
 
 export default server
