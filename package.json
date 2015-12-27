@@ -4,6 +4,7 @@
   "description": "The API for my personal site, franvarney.com",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
