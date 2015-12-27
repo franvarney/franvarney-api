@@ -1,7 +1,9 @@
 import {Server} from 'hapi'
+import Logger from '@modulus/logger'
 
 import Config from '../config'
 
+let logger = Logger('server/index')
 let server = new Server()
 
 server.connection({
@@ -10,8 +12,12 @@ server.connection({
 })
 
 server.start((err) => {
-  if (err) throw err
-  console.log(`Server starting at ${server.info.uri}`)
+  if (err) {
+    logger.error(`server.start error: ${err.message}`)
+    throw err
+  }
+
+  logger.info(`Server starting at ${server.info.uri}`)
 })
 
 export default server
