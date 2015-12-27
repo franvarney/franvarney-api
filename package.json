@@ -1,0 +1,23 @@
+{
+  "name": "franvarney-api",
+  "version": "0.0.0",
+  "description": "The API for my personal site, franvarney.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franvarney/franvarney-api.git"
+  },
+  "keywords": [
+    "franvarney",
+    "api"
+  ],
+  "author": "Fran Varney <fran.varn@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/franvarney/franvarney-api/issues"
+  },
+  "homepage": "https://github.com/franvarney/franvarney-api#readme"
+}
