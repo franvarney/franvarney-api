@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/franvarney/franvarney-api/issues"
   },
-  "homepage": "https://github.com/franvarney/franvarney-api#readme"
+  "homepage": "https://github.com/franvarney/franvarney-api#readme",
+  "dependencies": {
+    "babel-register": "6.3.13"
+  }
 }
