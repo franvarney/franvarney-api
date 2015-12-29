@@ -1,4 +1,5 @@
 export default {
+  authToken: process.env.AUTH_TOKEN || 'secret',
   env: process.env.NODE_ENV,
   host: process.env.HOST || 'localhost',
   mongo: {
