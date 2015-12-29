@@ -26,6 +26,7 @@
     "babel-preset-es2015": "6.3.13",
     "babel-register": "6.3.13",
     "hapi": "11.1.3",
+    "hapi-auth-bearer-token": "4.0.0",
     "knock-knock": "0.1.0",
     "mongoose": "4.3.4",
     "mongoose-shortid-nodeps": "0.6.4",
