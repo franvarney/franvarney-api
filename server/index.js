@@ -2,7 +2,9 @@ import {Server} from 'hapi'
 import Logger from '@modulus/logger'
 import Mongoose from 'mongoose'
 
+import Auth from './handlers/auth'
 import Config from '../config'
+import Plugins from './plugins'
 import Routes from './routes'
 
 let logger = Logger('server/index')
@@ -20,6 +22,24 @@ Mongoose.connect(Config.mongo.url, (err) => {
 server.connection({
   host: Config.env !== 'production' ? Config.host : null,
   port: parseInt(Config.port, 10)
+})
+
+server.register(Plugins, (err) => {
+  if (err) {
+    logger.error(`server.register error: ${err.message}`)
+    throw err
+  }
+})
+
+server.auth.strategy('simple', 'bearer-access-token', {
+  allowQueryToken: true,
+  allowMultipleHeaders: false,
+  accessTokenName: 'auth_token',
+  validateFunc: Auth.validate
+})
+
+server.auth.default({
+  strategy: 'simple'
 })
 
 server.start((err) => {
