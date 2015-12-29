@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "LOG_LEVEL=none lab -T node_modules/lab-babel -c -v -I __core-js_shared__"
   },
   "repository": {
     "type": "git",
