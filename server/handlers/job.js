@@ -44,7 +44,7 @@ export default {
 
       new Job(newJob).save((err, created) => {
         if (err) {
-          logger.error(`Job.create error: ${err}`)
+          logger.error(`Job.create error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
@@ -64,7 +64,7 @@ export default {
     handler: function (request, reply) {
       Job.findOne({ id: request.params.id }, (err, job) => {
         if (err) {
-          logger.error(`Job.findOne error: ${err}`)
+          logger.error(`Job.findOne error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
@@ -79,7 +79,7 @@ export default {
     handler: function (request, reply) {
       Job.find({}, (err, jobs) => {
         if (err) {
-          logger.error(`Job.find error: ${err}`)
+          logger.error(`Job.find error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
@@ -99,7 +99,7 @@ export default {
     handler: function (request, reply) {
       Job.remove({ id: request.params.id }, (err) => {
         if (err) {
-          logger.error(`Job.remove error: ${err}`)
+          logger.error(`Job.remove error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
@@ -134,7 +134,7 @@ export default {
 
       Job.update({ id: params.id }, payload, (err) => {
         if (err) {
-          logger.error(`Job.update error: ${err}`)
+          logger.error(`Job.update error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
