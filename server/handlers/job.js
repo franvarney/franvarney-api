@@ -72,5 +72,20 @@ export default {
         reply(job)
       })
     }
+  },
+
+  ////////// Job.getAll \\\\\\\\\\
+  getAll: {
+    handler: function (request, reply) {
+      Job.find({}, (err, jobs) => {
+        if (err) {
+          logger.error(`Job.find error: ${err}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Job.find found ${JSON.stringify(jobs)}`)
+        reply(jobs)
+      })
+    }
   }
 }
