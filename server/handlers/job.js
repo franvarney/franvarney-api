@@ -87,5 +87,25 @@ export default {
         reply(jobs)
       })
     }
+  },
+
+  ////////// Job.remove \\\\\\\\\\
+  remove: {
+    validate: {
+      params: {
+        id: Joi.string().required()
+      }
+    },
+    handler: function (request, reply) {
+      Job.remove({ id: request.params.id }, (err) => {
+        if (err) {
+          logger.error(`Job.remove error: ${err}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Job.remove removed ${request.params.id}`)
+        reply()
+      })
+    }
   }
 }
