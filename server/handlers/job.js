@@ -52,5 +52,25 @@ export default {
         reply(created)
       })
     }
+  },
+
+  ////////// Job.get \\\\\\\\\\
+  get: {
+    validate: {
+      params: {
+        id: Joi.string().required()
+      }
+    },
+    handler: function (request, reply) {
+      Job.findOne({ id: request.params.id }, (err, job) => {
+        if (err) {
+          logger.error(`Job.findOne error: ${err}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Job.findOne found ${JSON.stringify(job)}`)
+        reply(job)
+      })
+    }
   }
 }
