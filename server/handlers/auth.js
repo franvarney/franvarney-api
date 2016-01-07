@@ -6,11 +6,13 @@ import Config from '../../config'
 let logger = Logger('handlers/auth')
 
 function validate(token, callback) {
+  let request = this
+
   if (token === Config.authToken) {
-    logger.info(`Request validated with token ${token}`)
+    logger.info(`Request to ${request.path} validated with token ${token}`)
     callback(null, true, { token: token })
   } else {
-    logger.error(`Request not validated with token ${token}`)
+    logger.error(`Request to ${request.path} not validated with token ${token}`)
     callback(unauthorized('Invalid token'), false, { token: token })
   }
 }
