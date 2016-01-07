@@ -4,5 +4,6 @@ import Ping from './handlers/ping'
 export default [
   { method: 'GET', path: '/ping', config: { auth: false, handler: Ping } },
 
-  { method: 'POST', path: '/jobs', config: Job.create }
+  { method: 'POST', path: '/jobs', config: Job.create },
+  { method: 'GET', path: '/jobs/{id}', config: Job.get }
 ]
