@@ -107,5 +107,40 @@ export default {
         reply()
       })
     }
+  },
+
+  ////////// Job.update \\\\\\\\\\
+  update: {
+    validate: {
+      params: {
+        id: Joi.string().required()
+      },
+      payload: {
+        employer: Joi.string(),
+        location: {
+          city: Joi.string(),
+          state: Joi.string()
+        },
+        dates: {
+          start: Joi.string(),
+          end: Joi.string()
+        },
+        title: Joi.string(),
+        tasks: Joi.array()
+      }
+    },
+    handler: function (request, reply) {
+      let {params, payload} = request
+
+      Job.update({ id: params.id }, payload, (err) => {
+        if (err) {
+          logger.error(`Job.update error: ${err}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Job.update updated ${params.id}`)
+        reply(params.id)
+      })
+    }
   }
 }
