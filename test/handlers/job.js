@@ -18,6 +18,9 @@ describe('handlers/job', () => {
       query: {
         auth_token: 'secret'
       },
+      params: {
+        id: 'abc123'
+      },
       payload: {
         employer: 'Test Employer',
         location: {
@@ -36,12 +39,14 @@ describe('handlers/job', () => {
     newJob.createdAt = date
 
     stub(JobModel, 'create').yields(new Error('job create'))
+    stub(JobModel, 'findOne').yields(new Error('job findOne'))
 
     done()
   })
 
   afterEach((done) => {
     JobModel.create.restore()
+    JobModel.findOne.restore()
 
     done()
   })
@@ -65,6 +70,32 @@ describe('handlers/job', () => {
       it('yields an error', (done) => {
         Job.create.handler(request, (err) => {
           expect(err.message).to.equal('job create')
+          done()
+        })
+      })
+    })
+  })
+
+  describe('get', () => {
+    describe('when a job exists', () => {
+      beforeEach((done) => {
+        newJob._id = 'abc123'
+        JobModel.findOne.yields(null, newJob)
+        done()
+      })
+
+      it('yields the job', (done) => {
+        Job.get.handler(request, (job) => {
+          expect(job._id).to.equal('abc123')
+          done()
+        })
+      })
+    })
+
+    describe('when a job doesn\'t exist', () => {
+      it('yields an error', (done) => {
+        Job.get.handler(request, (err) => {
+          expect(err.message).to.equal('job findOne')
           done()
         })
       })
