@@ -48,6 +48,7 @@ describe('handlers/job', () => {
     stub(JobModel, 'create').yields(new Error('job create'))
     stub(JobModel, 'find').yields(new Error('job find'))
     stub(JobModel, 'findOne').yields(new Error('job findOne'))
+    stub(JobModel, 'remove').yields(new Error('job remove'))
 
     done()
   })
@@ -56,6 +57,7 @@ describe('handlers/job', () => {
     JobModel.create.restore()
     JobModel.find.restore()
     JobModel.findOne.restore()
+    JobModel.remove.restore()
 
     done()
   })
@@ -140,6 +142,31 @@ describe('handlers/job', () => {
         })
       })
     })
+  })
+
+  describe('remove', () => {
+    describe('when a job exists', () => {
+      beforeEach((done) => {
+        JobModel.remove.yields()
+        done()
+      })
+
+      it('is deleted and yields undefined', (done) => {
+        Job.remove.handler(request, (results) => {
+          expect(results).to.be.undefined()
+          done()
+        })
+      })
+    })
+
+    // TODO: Add in after adding a pre remove to the jobs model
+    // describe('when the job does not exist', () => {
+    //   it('yields an error', (done) => {
+    //     Job.remove.handler(request, (err) => {
+    //       done()
+    //     })
+    //   })
+    // })
   })
 })
 
