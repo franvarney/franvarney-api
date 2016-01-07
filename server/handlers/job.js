@@ -22,11 +22,11 @@ export default {
           end: Joi.string()
         },
         title: Joi.string().required(),
-        responsibilities: Joi.array()
+        tasks: Joi.array()
       }
     },
     handler: function (request, reply) {
-      let {employer, location, dates, responsibilities, title} = request.payload
+      let {employer, location, dates, tasks, title} = request.payload
 
       let newJob =  {
         employer: employer,
@@ -39,7 +39,7 @@ export default {
           end: dates.end
         },
         title: title,
-        responsibilities: responsibilities
+        tasks: tasks
       }
 
       new Job(newJob).save((err, created) => {

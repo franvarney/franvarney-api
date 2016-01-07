@@ -14,7 +14,7 @@ let Job = new Schema({
     end: { type: String, default: 'Present' }
   },
   title: { type: String, required: true },
-  responsibilities: { type: Array, default: [] }
+  tasks: { type: Array, default: [] }
 })
 
 Job.plugin(Timestamps)
