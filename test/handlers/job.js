@@ -49,6 +49,7 @@ describe('handlers/job', () => {
     stub(JobModel, 'find').yields(new Error('job find'))
     stub(JobModel, 'findOne').yields(new Error('job findOne'))
     stub(JobModel, 'remove').yields(new Error('job remove'))
+    stub(JobModel, 'update').yields(new Error('job updaete'))
 
     done()
   })
@@ -58,6 +59,7 @@ describe('handlers/job', () => {
     JobModel.find.restore()
     JobModel.findOne.restore()
     JobModel.remove.restore()
+    JobModel.update.restore()
 
     done()
   })
@@ -163,6 +165,31 @@ describe('handlers/job', () => {
     // describe('when the job does not exist', () => {
     //   it('yields an error', (done) => {
     //     Job.remove.handler(request, (err) => {
+    //       done()
+    //     })
+    //   })
+    // })
+  })
+
+  describe('update', () => {
+    describe('when jobs exist', () => {
+      beforeEach((done) => {
+        JobModel.update.yields(null, newJob.id)
+        done()
+      })
+
+      it('updates the job and yields the job id', (done) => {
+        Job.update.handler(request, (result) => {
+          expect(result).to.equal('abc123')
+          done()
+        })
+      })
+    })
+
+    // TODO: Add in after adding a pre remove to the jobs model
+    // describe('when the job does not exist', () => {
+    //   it('yields an error', (done) => {
+    //     Job.update.handler(request, (err) => {
     //       done()
     //     })
     //   })
