@@ -10,7 +10,7 @@ import Config from '../../config'
 import Job from '../../server/handlers/job'
 import JobModel from '../../server/models/job'
 
-let date = Date.now(), newJob, request
+let date = Date.now(), jobs, newJob, newJob2, request
 
 describe('handlers/job', () => {
   beforeEach((done) => {
@@ -37,8 +37,16 @@ describe('handlers/job', () => {
 
     newJob = request.payload
     newJob.createdAt = date
+    newJob.id = 'abc123'
+
+    newJob2 = Object.assign({}, request.payload)
+    newJob2.employer = 'Test Employer 2'
+    newJob2.id = 'def456'
+
+    jobs = [newJob, newJob2]
 
     stub(JobModel, 'create').yields(new Error('job create'))
+    stub(JobModel, 'find').yields(new Error('job find'))
     stub(JobModel, 'findOne').yields(new Error('job findOne'))
 
     done()
@@ -46,6 +54,7 @@ describe('handlers/job', () => {
 
   afterEach((done) => {
     JobModel.create.restore()
+    JobModel.find.restore()
     JobModel.findOne.restore()
 
     done()
@@ -79,14 +88,14 @@ describe('handlers/job', () => {
   describe('get', () => {
     describe('when a job exists', () => {
       beforeEach((done) => {
-        newJob._id = 'abc123'
+        newJob.id = 'abc123'
         JobModel.findOne.yields(null, newJob)
         done()
       })
 
       it('yields the job', (done) => {
         Job.get.handler(request, (job) => {
-          expect(job._id).to.equal('abc123')
+          expect(job.id).to.equal('abc123')
           done()
         })
       })
@@ -96,6 +105,37 @@ describe('handlers/job', () => {
       it('yields an error', (done) => {
         Job.get.handler(request, (err) => {
           expect(err.message).to.equal('job findOne')
+          done()
+        })
+      })
+    })
+  })
+
+  describe('getAll', () => {
+    describe('when jobs exist', () => {
+      beforeEach((done) => {
+        JobModel.find.yields(null, jobs)
+        done()
+      })
+
+      it('yields the jobs', (done) => {
+        Job.getAll.handler(request, (results) => {
+          expect(results[0].id).to.equal('abc123')
+          expect(results[1].id).to.equal('def456')
+          done()
+        })
+      })
+    })
+
+    describe('when no jobs exist', () => {
+      beforeEach((done) => {
+        JobModel.find.yields(null, [])
+        done()
+      })
+
+      it('yields an empty array', (done) => {
+        Job.getAll.handler(request, (results) => {
+          expect(results).to.empty()
           done()
         })
       })
