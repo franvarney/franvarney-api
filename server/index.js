@@ -4,6 +4,8 @@ import Mongoose from 'mongoose'
 
 import Auth from './handlers/auth'
 import Config from '../config'
+import CronJob from '../server/jobs'
+import GithubActivity from '../server/jobs/github-activity'
 import Plugins from './plugins'
 import Routes from './routes'
 
@@ -51,6 +53,8 @@ server.start((err) => {
   logger.info(`Server starting at ${server.info.uri}`)
 
   server.route(Routes)
+
+  CronJob(GithubActivity, Config.jobs.frequency.githubActivity)
 })
 
 export default server
