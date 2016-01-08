@@ -6,6 +6,11 @@ export default {
     apiUrl: 'https://api.github.com',
     username: process.env.GITHUB_USERNAME || 'username'
   },
+  jobs: {
+    frequency: {
+      githubActivity: process.env.JOBS_FREQUENCY_GITHUB || '00 */1 * * * *' // '00 00 03 * * *'
+    }
+  },
   mongo: {
     url: process.env.MONGO_URL || 'mongodb://localhost:27017/FranVarney'
   },
