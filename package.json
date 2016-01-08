@@ -21,6 +21,9 @@
     "url": "https://github.com/franvarney/franvarney-api/issues"
   },
   "homepage": "https://github.com/franvarney/franvarney-api#readme",
+  "engines": {
+    "node": "4.2"
+  },
   "dependencies": {
     "@modulus/logger": "1.1.0",
     "babel-preset-es2015": "6.3.13",
