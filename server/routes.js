@@ -1,7 +1,10 @@
 import Job from './handlers/job'
+import Home from './handlers/home'
 import Ping from './handlers/ping'
 
 export default [
+  { method: 'GET', path: '/', config: { auth: false, handler: Home } },
+
   { method: 'GET', path: '/ping', config: { auth: false, handler: Ping } },
 
   { method: 'POST', path: '/jobs', config: Job.create },
