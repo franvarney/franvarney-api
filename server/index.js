@@ -6,6 +6,7 @@ import Auth from './handlers/auth'
 import Config from '../config'
 import CronJob from '../server/jobs'
 import GithubActivity from '../server/jobs/github-activity'
+import UpdateCache from '../server/jobs/update-cache'
 import Plugins from './plugins'
 import Routes from './routes'
 
@@ -55,6 +56,7 @@ server.start((err) => {
   server.route(Routes)
 
   CronJob(GithubActivity, Config.jobs.frequency.githubActivity)
+  CronJob(UpdateCache, Config.jobs.frequency.updateCache)
 })
 
 export default server
