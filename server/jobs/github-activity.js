@@ -2,16 +2,31 @@ import Logger from '@modulus/logger'
 import Request from 'request'
 
 import Config from '../../config'
-import yesterdaysDate from '../helpers/yesterdays-date'
 import GithubActivityModel from '../models/github/activity'
+import Recurse from '../helpers/recurse'
+import YesterdaysDate from '../helpers/yesterdays-date'
 
 let logger = Logger('jobs/github-activity')
 
 const EVENT_TYPES = ['IssuesEvent', 'PullRequestEvent', 'PushEvent']
 const PER_PAGE = 100
 
+function saveActivities(item, index, next) {
+  GithubActivityModel.update(
+    { id: item.id }, item,
+    { upsert: true, setDefaultsOnInsert: true },
+    (err) => {
+      if (err) {
+        logger.error(`GithubActivityModel.update error: ${err.message}`)
+        return next(err)
+      }
+
+      next()
+    })
+}
+
 function parseEvents(body, done) {
-  let yesterday = yesterdaysDate()
+  let yesterday = YesterdaysDate()
 
   let events = body.filter((event) => {
     return EVENT_TYPES.indexOf(event.type) > -1 &&
@@ -30,44 +45,7 @@ function parseEvents(body, done) {
       }
     })
 
-    function next(remaining) {
-      let event = remaining.shift()
-
-      if (!event) return done()
-
-      let eventDate = new Date(event.created)
-
-      GithubActivityModel.findOne({ id: event.id }, function (err, found) {
-        if (err) {
-          logger.error(`GithubActivityModel.find error: ${err.message}`)
-          return next(remaining)
-        }
-
-        if (!found) {
-          new GithubActivityModel(event).save(function (err, created) {
-            if (err) {
-              logger.error(`GithubActivityModel.create error: ${err.message}`)
-            }
-
-            logger.debug(`GithubActivityModel.create saved ${JSON.stringify(created)}`)
-            next(remaining)
-          })
-        } else if (found.id === event.id && found.count !== event.count) {
-          GithubActivityModel.update({ id: event.id }, event, function (err, updated) {
-            if (err) {
-              logger.error(`GithubActivityModel.update error: ${err.message}`)
-            }
-
-            logger.debug(`GithubActivityModel.update saved ${JSON.stringify(updated)}`)
-            next(remaining)
-          })
-        } else {
-          next(remaining)
-        }
-      })
-    }
-
-    next(events.slice())
+    Recurse(events, saveActivities, done)
   }
 }
 
@@ -92,11 +70,7 @@ function getEvents(page, done) {
 
     if (response.statusCode === 200 && body.length > 0) {
       parseEvents(body, (err) => {
-        if (err) {
-          logger.error(`github-activity err: ${err.message}`)
-          return done(err)
-        }
-
+        if (err) return done(err)
         getEvents(++page, done)
       })
     } else {
@@ -106,14 +80,11 @@ function getEvents(page, done) {
   })
 }
 
-export default function () {
-  logger.info('Running github-activity job...')
+export default function getGithubActivity() {
+  logger.info('Running job...')
 
   getEvents(1, (err) => {
-    if (err) {
-      logger.error(`github-activity err: ${err.message}`)
-    }
-
-    logger.info('github-activity job completed')
+    if (err) return logger.error(`error: ${err.message}`)
+    logger.info('...completed')
   })
 }
