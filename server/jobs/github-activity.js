@@ -4,7 +4,7 @@ import Request from 'request'
 import Config from '../../config'
 import GithubActivityModel from '../models/github/activity'
 import Recurse from '../helpers/recurse'
-import YesterdaysDate from '../helpers/yesterdays-date'
+import DaysAgo from '../helpers/days-ago'
 
 let logger = Logger('jobs/github-activity')
 
@@ -26,7 +26,7 @@ function saveActivities(item, index, next) {
 }
 
 function parseEvents(body, done) {
-  let yesterday = YesterdaysDate()
+  let yesterday = DaysAgo(1)
 
   let events = body.filter((event) => {
     return EVENT_TYPES.indexOf(event.type) > -1 &&
