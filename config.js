@@ -8,7 +8,8 @@ export default {
   },
   jobs: {
     frequency: {
-      githubActivity: process.env.JOBS_FREQUENCY_GITHUB || '00 */1 * * * *' // '00 00 03 * * *'
+      githubActivity: process.env.JOBS_FREQUENCY_GITHUB || '00 */1 * * * *',
+      updateCache: process.env.JOBS_FREQUENCY_CACHE || '00 */2 * * * *'
     }
   },
   mongo: {
