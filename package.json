@@ -37,7 +37,8 @@
     "mongoose": "4.3.4",
     "mongoose-shortid-nodeps": "0.6.4",
     "mongoose-timestamp": "0.4.0",
-    "request": "2.67.0"
+    "request": "2.67.0",
+    "slug": "0.9.1"
   },
   "devDependencies": {
     "code": "2.0.1",
