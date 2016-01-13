@@ -24,7 +24,8 @@ Mongoose.connect(Config.mongo.url, (err) => {
 
 server.connection({
   host: Config.env !== 'production' ? Config.host : null,
-  port: parseInt(Config.port, 10)
+  port: parseInt(Config.port, 10),
+  routes: { cors: true }
 })
 
 server.register(Plugins, (err) => {
