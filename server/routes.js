@@ -1,5 +1,6 @@
 import Job from './handlers/job'
 import Home from './handlers/home'
+import Github from './handlers/github'
 import Ping from './handlers/ping'
 
 export default [
@@ -11,5 +12,7 @@ export default [
   { method: 'GET', path: '/jobs/{id}', config: Job.get },
   { method: 'GET', path: '/jobs', config: Job.getAll },
   { method: 'DELETE', path: '/jobs/{id}', config: Job.remove },
-  { method: 'PUT', path: '/jobs/{id}', config: Job.update }
+  { method: 'PUT', path: '/jobs/{id}', config: Job.update },
+
+  { method: 'GET', path: '/github/activities', config: Github.getAll }
 ]
