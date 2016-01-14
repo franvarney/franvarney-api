@@ -107,13 +107,13 @@ export default {
       }
     },
     handler: function (request, reply) {
-      Post.remove({ id: request.params.id }, (err) => {
+      Post.remove({ slug: request.params.slug }, (err) => {
         if (err) {
           logger.error(`Post.remove error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
-        logger.debug(`Post.remove removed ${request.params.id}`)
+        logger.debug(`Post.remove removed ${request.params.slug}`)
         reply()
       })
     }
@@ -137,14 +137,14 @@ export default {
     handler: function (request, reply) {
       let {params, payload} = request
 
-      Post.update({ id: params.id }, payload, (err) => {
+      Post.update({ slug: params.slug }, payload, (err) => {
         if (err) {
           logger.error(`Post.update error: ${err.message}`)
           return reply(badRequest(err.message))
         }
 
-        logger.debug(`Post.update updated ${params.id}`)
-        reply(params.id)
+        logger.debug(`Post.update updated ${params.slug}`)
+        reply(params.slug)
       })
     }
   }
