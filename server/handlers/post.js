@@ -38,8 +38,21 @@ export default {
           return reply(badRequest(err.message))
         }
 
-        logger.debug(`Post.create saved ${JSON.stringify(created)}`)
-        reply(created)
+        Post.update(
+          { slug: { $ne: created.slug } },
+          { latest: false },
+          { multi: true },
+          (err, count) => {
+            if (err) {
+              logger.error(`Post.update error: ${err.message}`)
+              return reply(badRequest(err.message))
+            }
+
+            logger.debug(`Post.update updated latest`)
+            logger.debug(`Post.create saved ${JSON.stringify(created)}`)
+
+            reply(created)
+          })
       })
     }
   },
@@ -66,8 +79,15 @@ export default {
 
   ////////// Post.getAll \\\\\\\\\\
   getAll: {
+    validate: {
+      query: {
+        latest: Joi.boolean()
+      }
+    },
     handler: function (request, reply) {
-      Post.find({}, (err, posts) => {
+      let query = request.query && request.query.latest ? { latest: true } : {}
+
+      Post.find(query, (err, posts) => {
         if (err) {
           logger.error(`Post.find error: ${err.message}`)
           return reply(badRequest(err.message))
@@ -110,7 +130,8 @@ export default {
         image: Joi.string(),
         caption: Joi.string(),
         content: Joi.string(),
-        tags: Joi.array()
+        tags: Joi.array(),
+        latest: Joi.boolean()
       }
     },
     handler: function (request, reply) {
