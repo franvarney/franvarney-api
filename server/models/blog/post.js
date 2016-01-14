@@ -7,7 +7,8 @@ let Post = new Schema({
   image: { type: String },
   caption: { type: String },
   content: { type: String, required: true },
-  tags: { type: Array, index: true, default: [] }
+  tags: { type: Array, index: true, default: [] },
+  latest: { type: String, index: true, default: true }
 })
 
 Post.plugin(Timestamps)
