@@ -18,5 +18,6 @@ export default [
   { method: 'GET', path: '/github/activities', config: Github.getAll },
 
   { method: 'POST', path: '/posts', config: Post.create },
-  { method: 'GET', path: '/posts/{slug}', config: Post.get }
+  { method: 'GET', path: '/posts/{slug}', config: Post.get },
+  { method: 'GET', path: '/posts', config: Post.getAll }
 ]
