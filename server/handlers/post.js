@@ -77,5 +77,25 @@ export default {
         reply(posts)
       })
     }
+  },
+
+  ////////// Post.remove \\\\\\\\\\
+  remove: {
+    validate: {
+      params: {
+        slug: Joi.string().required()
+      }
+    },
+    handler: function (request, reply) {
+      Post.remove({ id: request.params.id }, (err) => {
+        if (err) {
+          logger.error(`Post.remove error: ${err.message}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Post.remove removed ${request.params.id}`)
+        reply()
+      })
+    }
   }
 }
