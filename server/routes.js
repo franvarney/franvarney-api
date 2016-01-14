@@ -19,5 +19,6 @@ export default [
 
   { method: 'POST', path: '/posts', config: Post.create },
   { method: 'GET', path: '/posts/{slug}', config: Post.get },
-  { method: 'GET', path: '/posts', config: Post.getAll }
+  { method: 'GET', path: '/posts', config: Post.getAll },
+  { method: 'DELETE', path: '/posts/{slug}', config: Post.remove }
 ]
