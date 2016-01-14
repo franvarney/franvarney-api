@@ -42,5 +42,25 @@ export default {
         reply(created)
       })
     }
+  },
+
+  ////////// Post.get \\\\\\\\\\
+  get: {
+    validate: {
+      params: {
+        slug: Joi.string().required()
+      }
+    },
+    handler: function (request, reply) {
+      Post.findOne({ slug: request.params.slug }, (err, post) => {
+        if (err) {
+          logger.error(`Job.findOne error: ${err.message}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Post.findOne found ${JSON.stringify(post)}`)
+        reply(post)
+      })
+    }
   }
 }
