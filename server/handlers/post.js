@@ -97,5 +97,34 @@ export default {
         reply()
       })
     }
+  },
+
+  ////////// Post.update \\\\\\\\\\
+  update: {
+    validate: {
+      params: {
+        slug: Joi.string().required()
+      },
+      payload: {
+        title: Joi.string(),
+        image: Joi.string(),
+        caption: Joi.string(),
+        content: Joi.string(),
+        tags: Joi.array()
+      }
+    },
+    handler: function (request, reply) {
+      let {params, payload} = request
+
+      Post.update({ id: params.id }, payload, (err) => {
+        if (err) {
+          logger.error(`Post.update error: ${err.message}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Post.update updated ${params.id}`)
+        reply(params.id)
+      })
+    }
   }
 }
