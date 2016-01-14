@@ -62,5 +62,20 @@ export default {
         reply(post)
       })
     }
+  },
+
+  ////////// Post.getAll \\\\\\\\\\
+  getAll: {
+    handler: function (request, reply) {
+      Post.find({}, (err, posts) => {
+        if (err) {
+          logger.error(`Post.find error: ${err.message}`)
+          return reply(badRequest(err.message))
+        }
+
+        logger.debug(`Post.find found ${JSON.stringify(posts)}`)
+        reply(posts)
+      })
+    }
   }
 }
