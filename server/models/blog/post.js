@@ -6,6 +6,7 @@ let Post = new Schema({
   slug: { type: String, index: true, required: true },
   image: { type: String },
   caption: { type: String },
+  summary: { type: String, required: true },
   content: { type: String, required: true },
   tags: { type: Array, index: true, default: [] },
   latest: { type: String, index: true, default: true }
