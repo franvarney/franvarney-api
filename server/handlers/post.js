@@ -16,18 +16,20 @@ export default {
         title: Joi.string().required(),
         image: Joi.string(),
         caption: Joi.string(),
+        summary: Joi.string().required(),
         content: Joi.string().required(),
         tags: Joi.array()
       }
     },
     handler: function (request, reply) {
-      let {caption, content, image, tags, title} = request.payload
+      let {caption, content, image, summary, tags, title} = request.payload
 
       let newPost =  {
         title: title,
         slug: Slug(title, { lower: true }),
         image: image,
         caption: caption,
+        summary: summary,
         content: content,
         tags: tags
       }
@@ -94,6 +96,17 @@ export default {
         }
 
         logger.debug(`Post.find found ${JSON.stringify(posts)}`)
+
+        posts = posts.sort((a, b) => {
+          a = new Date(a.createdAt)
+          b = new Date(b.createdAt)
+
+          if(a < b) return -1
+          if(a > b) return 1
+
+          return 0
+        })
+
         reply(posts)
       })
     }
@@ -129,6 +142,7 @@ export default {
         title: Joi.string(),
         image: Joi.string(),
         caption: Joi.string(),
+        summary: Joi.string(),
         content: Joi.string(),
         tags: Joi.array(),
         latest: Joi.boolean()
