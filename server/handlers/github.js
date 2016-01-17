@@ -1,7 +1,7 @@
 import {badRequest} from 'boom'
 import Logger from '@modulus/logger'
 
-import GithubActivityCache from '../models/github/cache'
+import GithubActivityCache from '../models/github/activity-cache'
 
 let logger = Logger('handlers/github')
 

@@ -1,7 +1,7 @@
 import Logger from '@modulus/logger'
 
 import GithubActivity from '../models/github/activity'
-import GithubActivityCache from '../models/github/cache'
+import GithubActivityCache from '../models/github/activity-cache'
 import Recurse from '../helpers/recurse'
 
 let logger = Logger('jobs/update-cache')
