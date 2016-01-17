@@ -76,8 +76,19 @@ export default {
 
   ////////// Job.getAll \\\\\\\\\\
   getAll: {
+    validate: {
+      query: {
+        present: Joi.string()
+      }
+    },
     handler: function (request, reply) {
-      Job.find({}, (err, jobs) => {
+      let query = {}
+
+      if (request.query && request.query.present) {
+        query = { 'dates.end': 'Present' }
+      }
+
+      Job.find(query, (err, jobs) => {
         if (err) {
           logger.error(`Job.find error: ${err.message}`)
           return reply(badRequest(err.message))
