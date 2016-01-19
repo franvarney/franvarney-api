@@ -101,8 +101,8 @@ export default {
           a = new Date(a.createdAt)
           b = new Date(b.createdAt)
 
-          if(a < b) return -1
-          if(a > b) return 1
+          if(a < b) return 1
+          if(a > b) return -1
 
           return 0
         })
