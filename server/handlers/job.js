@@ -56,6 +56,7 @@ export default {
 
   ////////// Job.get \\\\\\\\\\
   get: {
+    auth: false,
     validate: {
       params: {
         id: Joi.string().required()
@@ -76,6 +77,7 @@ export default {
 
   ////////// Job.getAll \\\\\\\\\\
   getAll: {
+    auth: false,
     validate: {
       query: {
         present: Joi.string()

@@ -9,6 +9,7 @@ export default {
 
   /////////// Github.getAll \\\\\\\\\\
   getAll: {
+    auth: false,
     handler: function (request, reply) {
       GithubActivityCache.find({}, (err, activities) => {
         if (err) {

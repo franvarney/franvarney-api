@@ -61,6 +61,7 @@ export default {
 
   ////////// Post.get \\\\\\\\\\
   get: {
+    auth: false,
     validate: {
       params: {
         slug: Joi.string().required()
@@ -81,6 +82,7 @@ export default {
 
   ////////// Post.getAll \\\\\\\\\\
   getAll: {
+    auth: false,
     validate: {
       query: {
         latest: Joi.boolean()
