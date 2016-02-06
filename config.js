@@ -4,7 +4,8 @@ export default {
   host: process.env.HOST || 'localhost',
   github: {
     apiUrl: 'https://api.github.com',
-    username: process.env.GITHUB_USERNAME || 'username'
+    username: process.env.GITHUB_USERNAME || 'username',
+    accessToken: process.env.GITHUB_ACCESS_TOKEN || '123abc'
   },
   jobs: {
     frequency: {
