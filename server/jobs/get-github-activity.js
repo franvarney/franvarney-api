@@ -59,6 +59,7 @@ function getEvents(page, done) {
       'User-Agent': Config.github.username
     },
     qs: {
+      access_token: Config.github.accessToken,
       per_page: PER_PAGE,
       page: page
     },
