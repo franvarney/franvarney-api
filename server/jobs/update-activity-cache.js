@@ -9,6 +9,10 @@ let logger = Logger('jobs/update-cache')
 function saveActivityCounts(item, index, next) {
   let date = Object.keys(item)[0]
 
+  // keeps the front-end graph looking pretty
+  if (item[date] > 60) item[date] -= 25
+  if (item[date] > 80) item[date] -= 35
+
   GithubActivityCache.update(
     { date: date },
     { date: date, total: item[date] },
