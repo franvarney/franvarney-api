@@ -1,6 +1,10 @@
 export default {
   authToken: process.env.AUTH_TOKEN || 'secret',
   env: process.env.NODE_ENV,
+  flickr: {
+    apiKey: process.env.FLICKR_API_KEY || '123abc',
+    secret: process.env.FLICKR_SECRET || '123abc'
+  },
   host: process.env.HOST || 'localhost',
   github: {
     apiUrl: 'https://api.github.com',
