@@ -6,7 +6,8 @@ let Favorite = new Schema({
   id: { type: ShortId, index: true },
   name: { type: String, required: true },
   type: { type: String, required: true },
-  description: { type: String }
+  description: { type: String },
+  url: { type: String }
 })
 
 Job.plugin(Timestamps)
