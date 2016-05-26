@@ -1,10 +1,8 @@
-import Logger from '@modulus/logger'
+const Logger = require('@modulus/logger')('jobs/update-cache')
 
-import GithubActivity from '../models/github/activity'
-import GithubActivityCache from '../models/github/activity-cache'
-import Recurse from '../helpers/recurse'
-
-let logger = Logger('jobs/update-cache')
+const GithubActivity = require('../models/github/activity')
+const GithubActivityCache = require('../models/github/activity-cache')
+const Recurse = require('../helpers/recurse')
 
 function saveActivityCounts(item, index, next) {
   let date = Object.keys(item)[0]
@@ -18,12 +16,8 @@ function saveActivityCounts(item, index, next) {
     { date: date, total: item[date] },
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {
-      if (err) {
-        logger.error(`GithubActivityCache.update error: ${err.message}`)
-        return next(err)
-      }
-
-      next()
+      if (err) return Logger.error(err), next(err)
+      return next()
     })
 }
 
@@ -44,11 +38,11 @@ function updateCache(done) {
   })
 }
 
-export default function updateActivityCache() {
-  logger.info('Running job...')
+module.exports = function updateActivityCache() {
+  Logger.info('Running job...')
 
   updateCache((err) => {
-    if (err) return logger.error(`error: ${err.message}`)
-    logger.info('...completed')
+    if (err) return Logger.error(`error: ${err.message}`)
+    Logger.info('...completed')
   })
 }

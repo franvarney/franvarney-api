@@ -1,7 +1,7 @@
-import Mongoose, {Schema} from 'mongoose'
-import Timestamps from 'mongoose-timestamp'
+const Mongoose = require('mongoose')
+const Timestamps = require('mongoose-timestamp')
 
-let GithubActivity = new Schema({
+let GithubActivity = new Mongoose.Schema({
   id: { type: String, required: true, index: true },
   type: { type: String, required: true },
   count: { type: Number, default: 1 },
@@ -10,4 +10,4 @@ let GithubActivity = new Schema({
 
 GithubActivity.plugin(Timestamps)
 
-export default Mongoose.model('GithubActivity', GithubActivity)
+module.exports = Mongoose.model('GithubActivity', GithubActivity)

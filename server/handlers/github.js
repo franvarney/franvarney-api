@@ -1,36 +1,27 @@
-import {badRequest} from 'boom'
-import Logger from '@modulus/logger'
+const Boom = require('boom')
+const Logger = require('@modulus/logger')('handlers/github')
 
-import GithubActivityCache from '../models/github/activity-cache'
+const GithubActivityCache = require('../models/github/activity-cache')
 
-let logger = Logger('handlers/github')
+exports.getAll = {
+  auth: false,
+  handler: function (request, reply) {
+    GithubActivityCache.find({}, (err, activities) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-export default {
+      Logger.debug(activities)
 
-  /////////// Github.getAll \\\\\\\\\\
-  getAll: {
-    auth: false,
-    handler: function (request, reply) {
-      GithubActivityCache.find({}, (err, activities) => {
-        if (err) {
-          logger.error(`GithubActivityCache.find error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
+      activities = activities.sort((a, b) => {
+        a = new Date(a.date)
+        b = new Date(b.date)
 
-        logger.debug(`GithubActivityCache.find found ${JSON.stringify(activities)}`)
+        if(a < b) return -1
+        if(a > b) return 1
 
-        activities = activities.sort((a, b) => {
-          a = new Date(a.date)
-          b = new Date(b.date)
-
-          if(a < b) return -1
-          if(a > b) return 1
-
-          return 0
-        })
-
-        reply(activities)
+        return 0
       })
-    }
+
+      return reply(activities)
+    })
   }
 }

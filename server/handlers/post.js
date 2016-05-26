@@ -1,167 +1,133 @@
-import {badRequest, notFound} from 'boom'
-import Joi from 'joi'
-import Logger from '@modulus/logger'
-import Slug from 'slug'
+const Boom = require('boom')
+const Joi = require('joi')
+const Logger = require('@modulus/logger')('handlers/post')
+const Slug = require('slug')
 
-import Post from '../models/blog/post'
+const Post = require('../models/blog/post')
 
-let logger = Logger('handlers/post')
-
-export default {
-
-  /////////// Post.create \\\\\\\\\\
-  create: {
-    validate: {
-      payload: {
-        title: Joi.string().required(),
-        image: Joi.string(),
-        caption: Joi.string(),
-        summary: Joi.string().required(),
-        content: Joi.string().required(),
-        tags: Joi.array()
-      }
-    },
-    handler: function (request, reply) {
-      let {caption, content, image, summary, tags, title} = request.payload
-
-      let newPost =  {
-        title: title,
-        slug: Slug(title, { lower: true }),
-        image: image,
-        caption: caption,
-        summary: summary,
-        content: content,
-        tags: tags
-      }
-
-      new Post(newPost).save((err, created) => {
-        if (err) {
-          logger.error(`Post.create error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
-
-        Post.update(
-          { slug: { $ne: created.slug } },
-          { latest: false },
-          { multi: true },
-          (err, count) => {
-            if (err) {
-              logger.error(`Post.update error: ${err.message}`)
-              return reply(badRequest(err.message))
-            }
-
-            logger.debug(`Post.update updated latest`)
-            logger.debug(`Post.create saved ${JSON.stringify(created)}`)
-
-            reply(created)
-          })
-      })
+exports.create = {
+  validate: {
+    payload: {
+      title: Joi.string().required(),
+      image: Joi.string(),
+      caption: Joi.string(),
+      summary: Joi.string().required(),
+      content: Joi.string().required(),
+      tags: Joi.array()
     }
   },
+  handler: function (request, reply) {
+    let {caption, content, image, summary, tags, title} = request.payload
 
-  ////////// Post.get \\\\\\\\\\
-  get: {
-    auth: false,
-    validate: {
-      params: {
-        slug: Joi.string().required()
-      }
-    },
-    handler: function (request, reply) {
-      Post.findOne({ slug: request.params.slug }, (err, post) => {
-        if (err) {
-          logger.error(`Job.findOne error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
-
-        logger.debug(`Post.findOne found ${JSON.stringify(post)}`)
-        reply(post)
-      })
+    let newPost =  {
+      title,
+      slug: Slug(title, { lower: true }),
+      image,
+      caption,
+      summary,
+      content,
+      tags
     }
-  },
 
-  ////////// Post.getAll \\\\\\\\\\
-  getAll: {
-    auth: false,
-    validate: {
-      query: {
-        latest: Joi.boolean()
-      }
-    },
-    handler: function (request, reply) {
-      let query = request.query && request.query.latest ? { latest: true } : {}
+    new Post(newPost).save((err, created) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-      Post.find(query, (err, posts) => {
-        if (err) {
-          logger.error(`Post.find error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
-
-        logger.debug(`Post.find found ${JSON.stringify(posts)}`)
-
-        posts = posts.sort((a, b) => {
-          a = new Date(a.createdAt)
-          b = new Date(b.createdAt)
-
-          if(a < b) return 1
-          if(a > b) return -1
-
-          return 0
+      Post.update(
+        { slug: { $ne: created.slug } },
+        { latest: false },
+        { multi: true },
+        (err, count) => {
+          if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+          Logger.debug(created)
+          return reply(created)
         })
+    })
+  }
+}
 
-        reply(posts)
-      })
+exports.get = {
+  auth: false,
+  validate: {
+    params: {
+      slug: Joi.string().required()
     }
   },
+  handler: function (request, reply) {
+    Post.findOne({ slug: request.params.slug }, (err, post) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(post)
+      return reply(post)
+    })
+  }
+}
 
-  ////////// Post.remove \\\\\\\\\\
-  remove: {
-    validate: {
-      params: {
-        slug: Joi.string().required()
-      }
-    },
-    handler: function (request, reply) {
-      Post.remove({ slug: request.params.slug }, (err) => {
-        if (err) {
-          logger.error(`Post.remove error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
-
-        logger.debug(`Post.remove removed ${request.params.slug}`)
-        reply()
-      })
+exports.getAll = {
+  auth: false,
+  validate: {
+    query: {
+      latest: Joi.boolean()
     }
   },
+  handler: function (request, reply) {
+    let query = request.query && request.query.latest ? { latest: true } : {}
 
-  ////////// Post.update \\\\\\\\\\
-  update: {
-    validate: {
-      params: {
-        slug: Joi.string().required()
-      },
-      payload: {
-        title: Joi.string(),
-        image: Joi.string(),
-        caption: Joi.string(),
-        summary: Joi.string(),
-        content: Joi.string(),
-        tags: Joi.array(),
-        latest: Joi.boolean()
-      }
-    },
-    handler: function (request, reply) {
-      let {params, payload} = request
+    Post.find(query, (err, posts) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-      Post.update({ slug: params.slug }, payload, (err) => {
-        if (err) {
-          logger.error(`Post.update error: ${err.message}`)
-          return reply(badRequest(err.message))
-        }
+      Logger.debug(posts)
 
-        logger.debug(`Post.update updated ${params.slug}`)
-        reply(params.slug)
+      posts = posts.sort((a, b) => {
+        a = new Date(a.createdAt)
+        b = new Date(b.createdAt)
+
+        if(a < b) return 1
+        if(a > b) return -1
+
+        return 0
       })
+
+      return reply(posts)
+    })
+  }
+}
+
+exports.remove = {
+  validate: {
+    params: {
+      slug: Joi.string().required()
     }
+  },
+  handler: function (request, reply) {
+    Post.remove({ slug: request.params.slug }, (err) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(request.params.slug)
+      return reply()
+    })
+  }
+}
+
+exports.update = {
+  validate: {
+    params: {
+      slug: Joi.string().required()
+    },
+    payload: {
+      title: Joi.string(),
+      image: Joi.string(),
+      caption: Joi.string(),
+      summary: Joi.string(),
+      content: Joi.string(),
+      tags: Joi.array(),
+      latest: Joi.boolean()
+    }
+  },
+  handler: function (request, reply) {
+    let {params, payload} = request
+
+    Post.update({ slug: params.slug }, payload, (err) => {
+      if (err) return Logger.error(err), reply(BoombadRequest(err.message))
+      Logger.debug(params.slug)
+      return reply(params.slug)
+    })
   }
 }

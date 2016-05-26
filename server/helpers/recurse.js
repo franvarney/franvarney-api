@@ -1,4 +1,4 @@
-export default function (items, fn, done, options) {
+module.exports = function (items, fn, done, options) {
   let index = 0
 
   if (Array.isArray(items)) {

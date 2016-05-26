@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   authToken: process.env.AUTH_TOKEN || 'secret',
   env: process.env.NODE_ENV,
   flickr: {

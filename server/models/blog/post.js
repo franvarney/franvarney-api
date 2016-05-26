@@ -1,7 +1,7 @@
-import Mongoose, {Schema} from 'mongoose'
-import Timestamps from 'mongoose-timestamp'
+const Mongoose = require('mongoose')
+const Timestamps = require('mongoose-timestamp')
 
-let Post = new Schema({
+let Post = new Mongoose.Schema({
   title: { type: String, index: true, required: true },
   slug: { type: String, index: true, required: true },
   image: { type: String },
@@ -14,7 +14,7 @@ let Post = new Schema({
 
 Post.plugin(Timestamps)
 
-Post.pre('save', function (next) {
+Post.pre('save', (next) => {
   Mongoose.models['Post'].find({
     slug: this.slug
   }, (err, results) => {
@@ -24,4 +24,4 @@ Post.pre('save', function (next) {
   })
 })
 
-export default Mongoose.model('Post', Post)
+module.exports = Mongoose.model('Post', Post)

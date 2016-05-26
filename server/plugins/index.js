@@ -1,5 +1,5 @@
-import HapiAuthBearerToken from './hapi-auth-bearer-token'
+const HapiAuthBearerToken = require('./hapi-auth-bearer-token')
 
-export default [
+module.exports = [
   HapiAuthBearerToken
 ]

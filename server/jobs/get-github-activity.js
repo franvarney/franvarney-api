@@ -1,12 +1,10 @@
-import Logger from '@modulus/logger'
-import Request from 'request'
+const Logger = require('@modulus/logger')('jobs/github-activity')
+const Request = require('request')
 
-import Config from '../../config'
-import GithubActivityModel from '../models/github/activity'
-import Recurse from '../helpers/recurse'
-import DaysAgo from '../helpers/days-ago'
-
-let logger = Logger('jobs/github-activity')
+const Config = require('../../config')
+const GithubActivityModel = require('../models/github/activity')
+const Recurse = require('../helpers/recurse')
+const DaysAgo = require('../helpers/days-ago')
 
 const EVENT_TYPES = ['IssuesEvent', 'PullRequestEvent', 'PushEvent']
 const PER_PAGE = 100
@@ -16,12 +14,8 @@ function saveActivities(item, index, next) {
     { id: item.id }, item,
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {
-      if (err) {
-        logger.error(`GithubActivityModel.update error: ${err.message}`)
-        return next(err)
-      }
-
-      next()
+      if (err) return Logger.error(err), next(err)
+      return next()
     })
 }
 
@@ -38,8 +32,8 @@ function parseEvents(body, done) {
       let {id, type, payload, created_at} = event
 
       return {
-        id: id,
-        type: type,
+        id,
+        type,
         count: payload.distinct_size ? payload.distinct_size : 1,
         created: created_at
       }
@@ -75,17 +69,17 @@ function getEvents(page, done) {
         getEvents(++page, done)
       })
     } else {
-      logger.error(body.message)
+      Logger.error(body.message)
       return done()
     }
   })
 }
 
-export default function getGithubActivity() {
-  logger.info('Running job...')
+module.exports = function getGithubActivity() {
+  Logger.info('Running job...')
 
   getEvents(1, (err) => {
-    if (err) return logger.error(`error: ${err.message}`)
-    logger.info('...completed')
+    if (err) return Logger.error(`error: ${err.message}`)
+    Logger.info('...completed')
   })
 }
