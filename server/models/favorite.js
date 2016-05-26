@@ -1,8 +1,8 @@
-import Mongoose, {Schema} from 'mongoose'
-import ShortId from 'mongoose-shortid-nodeps'
-import Timestamps from 'mongoose-timestamp'
+const Mongoose = require('mongoose')
+const ShortId = require('mongoose-shortid-nodeps')
+const Timestamps = require('mongoose-timestamp')
 
-let Favorite = new Schema({
+let Favorite = new Mongoose.Schema({
   id: { type: ShortId, index: true },
   name: { type: String, required: true },
   type: { type: String, required: true },
@@ -12,7 +12,7 @@ let Favorite = new Schema({
 
 Job.plugin(Timestamps)
 
-Job.pre('save', function (next) {
+Job.pre('save', (next) => {
   Mongoose.models['Favorite'].find({
     name: this.name,
     type: this.type
@@ -23,4 +23,4 @@ Job.pre('save', function (next) {
   })
 })
 
-export default Mongoose.model('Favorite', Favorite)
+module.exports = Mongoose.model('Favorite', Favorite)

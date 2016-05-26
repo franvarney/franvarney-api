@@ -1,10 +1,10 @@
-import Job from './handlers/job'
-import Home from './handlers/home'
-import Github from './handlers/github'
-import Ping from './handlers/ping'
-import Post from './handlers/post'
+const Job = require('./handlers/job')
+const Home = require('./handlers/home')
+const Github = require('./handlers/github')
+const Ping = require('./handlers/ping')
+const Post = require('./handlers/post')
 
-export default [
+module.exports = [
   { method: 'GET', path: '/', config: { auth: false, handler: Home } },
 
   { method: 'GET', path: '/ping', config: { auth: false, handler: Ping } },

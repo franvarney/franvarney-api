@@ -1,11 +1,11 @@
-import Mongoose, {Schema} from 'mongoose'
-import Timestamps from 'mongoose-timestamp'
+const Mongoose = require('mongoose')
+const Timestamps = require('mongoose-timestamp')
 
-let GithubActivityCache = new Schema({
+let GithubActivityCache = new Mongoose.Schema({
   date: { type: String, required: true, index: true },
   total: { type: String, default: 0 }
 })
 
 GithubActivityCache.plugin(Timestamps)
 
-export default Mongoose.model('GithubActivityCache', GithubActivityCache)
+module.exports = Mongoose.model('GithubActivityCache', GithubActivityCache)

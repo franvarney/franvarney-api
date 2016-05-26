@@ -1,13 +1,13 @@
-import {CronJob} from 'cron'
+const Cron = require('cron')
 
 let jobs = {}
 
-export default function (job, frequency) {
+module.exports = function (job, frequency) {
   let name = job.prototype.constructor.name
 
   if (jobs[name]) jobs[name].stop()
 
-  jobs[name] = new CronJob({
+  jobs[name] = new Cron.CronJob({
     cronTime: frequency,
     onTick: job,
     start: true,

@@ -1,25 +1,24 @@
-import {Server} from 'hapi'
-import Logger from '@modulus/logger'
-import Mongoose from 'mongoose'
+const Hapi = require('hapi')
+const Logger = require('@modulus/logger')('server/index')
+const Mongoose = require('mongoose')
 
-import Auth from './handlers/auth'
-import Config from '../config'
-import CronJob from '../server/jobs'
-import GithubActivity from '../server/jobs/get-github-activity'
-import UpdateCache from '../server/jobs/update-activity-cache'
-import Plugins from './plugins'
-import Routes from './routes'
+const Auth = require('./handlers/auth')
+const Config = require('../config')
+const CronJob = require('../server/jobs')
+const GithubActivity = require('../server/jobs/get-github-activity')
+const Plugins = require('./plugins')
+const Routes = require('./routes')
+const UpdateCache = require('../server/jobs/update-activity-cache')
 
-let logger = Logger('server/index')
-let server = new Server()
+let server = new Hapi.Server()
 
 Mongoose.connect(Config.mongo.url, (err) => {
   if (err) {
-    logger.error(`Mongoose.connect error: ${err.message}`)
+    Logger.error(`Mongoose.connect error: ${err.message}`)
     throw err
   }
 
-  logger.info(`Connected to ${Config.mongo.url}`)
+  Logger.info(`Connected to ${Config.mongo.url}`)
 })
 
 server.connection({
@@ -30,7 +29,7 @@ server.connection({
 
 server.register(Plugins, (err) => {
   if (err) {
-    logger.error(`server.register error: ${err.message}`)
+    Logger.error(`server.register error: ${err.message}`)
     throw err
   }
 })
@@ -48,11 +47,11 @@ server.auth.default({
 
 server.start((err) => {
   if (err) {
-    logger.error(`server.start error: ${err.message}`)
+    Logger.error(`server.start error: ${err.message}`)
     throw err
   }
 
-  logger.info(`Server starting at ${server.info.uri}`)
+  Logger.info(`Server starting at ${server.info.uri}`)
 
   server.route(Routes)
 
@@ -60,4 +59,4 @@ server.start((err) => {
   CronJob(UpdateCache, Config.jobs.frequency.updateCache)
 })
 
-export default server
+module.exports = server

@@ -1,4 +1,3 @@
-require('babel-register')
 require('./server')
 
 var Logger = require('@modulus/logger')('index')

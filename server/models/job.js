@@ -1,8 +1,8 @@
-import Mongoose, {Schema} from 'mongoose'
-import ShortId from 'mongoose-shortid-nodeps'
-import Timestamps from 'mongoose-timestamp'
+const Mongoose = require('mongoose')
+const ShortId = require('mongoose-shortid-nodeps')
+const Timestamps = require('mongoose-timestamp')
 
-let Job = new Schema({
+let Job = new Mongoose.Schema({
   id: { type: ShortId, index: true },
   employer: { type: String, required: true },
   location: {
@@ -19,7 +19,7 @@ let Job = new Schema({
 
 Job.plugin(Timestamps)
 
-Job.pre('save', function (next) {
+Job.pre('save', (next) => {
   Mongoose.models['Job'].find({
     employer: this.employer,
     dates: {
@@ -33,4 +33,4 @@ Job.pre('save', function (next) {
   })
 })
 
-export default Mongoose.model('Job', Job)
+module.exports = Mongoose.model('Job', Job)

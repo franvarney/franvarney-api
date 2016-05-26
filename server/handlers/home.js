@@ -1,4 +1,4 @@
-export default function (request, reply) {
+module.exports = function (request, reply) {
   reply(`
           ___                  \n\
          / A \\                \n\
