@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test": "LOG_LEVEL=none lab -T node_modules/lab-babel -c -v -I __core-js_shared__"
+    "test": "LOG_LEVEL=none lab -cvv"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,10 @@
   },
   "homepage": "https://github.com/franvarney/franvarney-api#readme",
   "engines": {
-    "node": "4.2"
+    "node": "6.x"
   },
   "dependencies": {
-    "@modulus/logger": "1.1.0",
-    "babel-preset-es2015": "6.3.13",
-    "babel-register": "6.3.13",
+    "@modulus/logger": "1.2.0",
     "boom": "3.1.1",
     "cron": "1.1.0",
     "flickrapi": "0.4.1",
@@ -45,7 +43,6 @@
   "devDependencies": {
     "code": "2.0.1",
     "lab": "8.0.1",
-    "lab-babel": "1.1.1",
     "sinon": "1.17.2"
   }
 }
