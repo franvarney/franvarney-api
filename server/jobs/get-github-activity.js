@@ -14,12 +14,8 @@ function saveActivities(item, index, next) {
     { id: item.id }, item,
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {
-      if (err) {
-        Logger.error(`GithubActivityModel.update error: ${err.message}`)
-        return next(err)
-      }
-
-      next()
+      if (err) return Logger.error(err), next(err)
+      return next()
     })
 }
 
@@ -36,8 +32,8 @@ function parseEvents(body, done) {
       let {id, type, payload, created_at} = event
 
       return {
-        id: id,
-        type: type,
+        id,
+        type,
         count: payload.distinct_size ? payload.distinct_size : 1,
         created: created_at
       }

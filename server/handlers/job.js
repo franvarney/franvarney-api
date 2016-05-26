@@ -24,7 +24,7 @@ exports.create = {
     let {employer, location, dates, tasks, title} = request.payload
 
     let newJob =  {
-      employer: employer,
+      employer,
       location: {
         city: location.city,
         state: location.state
@@ -33,18 +33,14 @@ exports.create = {
         start: dates.start,
         end: dates.end
       },
-      title: title,
-      tasks: tasks
+      title,
+      tasks
     }
 
     new Job(newJob).save((err, created) => {
-      if (err) {
-        Logger.error(`Job.create error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
-
-      Logger.debug(`Job.create saved ${JSON.stringify(created)}`)
-      reply(created)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(created)
+      return reply(created)
     })
   }
 }
@@ -58,13 +54,9 @@ exports.get = {
   },
   handler: function (request, reply) {
     Job.findOne({ id: request.params.id }, (err, job) => {
-      if (err) {
-        Logger.error(`Job.findOne error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
-
-      Logger.debug(`Job.findOne found ${JSON.stringify(job)}`)
-      reply(job)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(job)
+      return reply(job)
     })
   }
 }
@@ -84,13 +76,9 @@ exports.getAll = {
     }
 
     Job.find(query, (err, jobs) => {
-      if (err) {
-        Logger.error(`Job.find error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
-
-      Logger.debug(`Job.find found ${JSON.stringify(jobs)}`)
-      reply(jobs)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(jobs)
+      return reply(jobs)
     })
   }
 }
@@ -103,13 +91,9 @@ exports.remove = {
   },
   handler: function (request, reply) {
     Job.remove({ id: request.params.id }, (err) => {
-      if (err) {
-        Logger.error(`Job.remove error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
-
-      Logger.debug(`Job.remove removed ${request.params.id}`)
-      reply()
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(request.params.id)
+      return reply()
     })
   }
 }
@@ -137,12 +121,8 @@ exports.update = {
     let {params, payload} = request
 
     Job.update({ id: params.id }, payload, (err) => {
-      if (err) {
-        Logger.error(`Job.update error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
-
-      Logger.debug(`Job.update updated ${params.id}`)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(params.id)
       reply(params.id)
     })
   }

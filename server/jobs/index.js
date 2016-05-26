@@ -3,7 +3,7 @@ const Cron = require('cron')
 let jobs = {}
 
 module.exports = function (job, frequency) {
-  let name = job.prototype.constructor.name
+  let {name} = job.prototype.constructor
 
   if (jobs[name]) jobs[name].stop()
 

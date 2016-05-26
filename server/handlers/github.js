@@ -7,12 +7,9 @@ exports.getAll = {
   auth: false,
   handler: function (request, reply) {
     GithubActivityCache.find({}, (err, activities) => {
-      if (err) {
-        Logger.error(`GithubActivityCache.find error: ${err.message}`)
-        return reply(Boom.badRequest(err.message))
-      }
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-      Logger.debug(`GithubActivityCache.find found ${JSON.stringify(activities)}`)
+      Logger.debug(activities)
 
       activities = activities.sort((a, b) => {
         a = new Date(a.date)
@@ -24,7 +21,7 @@ exports.getAll = {
         return 0
       })
 
-      reply(activities)
+      return reply(activities)
     })
   }
 }

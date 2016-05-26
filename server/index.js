@@ -1,4 +1,4 @@
-const Hapi = require('hapi')
+const {Server} = require('hapi')
 const Logger = require('@modulus/logger')('server/index')
 const Mongoose = require('mongoose')
 
@@ -10,14 +10,10 @@ const Plugins = require('./plugins')
 const Routes = require('./routes')
 const UpdateCache = require('../server/jobs/update-activity-cache')
 
-let server = new Hapi.Server()
+let server = new Server()
 
 Mongoose.connect(Config.mongo.url, (err) => {
-  if (err) {
-    Logger.error(`Mongoose.connect error: ${err.message}`)
-    throw err
-  }
-
+  if (err) throw err
   Logger.info(`Connected to ${Config.mongo.url}`)
 })
 
@@ -28,10 +24,7 @@ server.connection({
 })
 
 server.register(Plugins, (err) => {
-  if (err) {
-    Logger.error(`server.register error: ${err.message}`)
-    throw err
-  }
+  if (err) throw err
 })
 
 server.auth.strategy('simple', 'bearer-access-token', {
@@ -46,10 +39,7 @@ server.auth.default({
 })
 
 server.start((err) => {
-  if (err) {
-    Logger.error(`server.start error: ${err.message}`)
-    throw err
-  }
+  if (err) throw err
 
   Logger.info(`Server starting at ${server.info.uri}`)
 

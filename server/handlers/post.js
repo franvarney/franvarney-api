@@ -20,35 +20,26 @@ exports.create = {
     let {caption, content, image, summary, tags, title} = request.payload
 
     let newPost =  {
-      title: title,
+      title,
       slug: Slug(title, { lower: true }),
-      image: image,
-      caption: caption,
-      summary: summary,
-      content: content,
-      tags: tags
+      image,
+      caption,
+      summary,
+      content,
+      tags
     }
 
     new Post(newPost).save((err, created) => {
-      if (err) {
-        Logger.error(`Post.create error: ${err.message}`)
-        return reply(BoombadRequest(err.message))
-      }
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
       Post.update(
         { slug: { $ne: created.slug } },
         { latest: false },
         { multi: true },
         (err, count) => {
-          if (err) {
-            Logger.error(`Post.update error: ${err.message}`)
-            return reply(BoombadRequest(err.message))
-          }
-
-          Logger.debug(`Post.update updated latest`)
-          Logger.debug(`Post.create saved ${JSON.stringify(created)}`)
-
-          reply(created)
+          if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+          Logger.debug(created)
+          return reply(created)
         })
     })
   }
@@ -63,13 +54,9 @@ exports.get = {
   },
   handler: function (request, reply) {
     Post.findOne({ slug: request.params.slug }, (err, post) => {
-      if (err) {
-        Logger.error(`Job.findOne error: ${err.message}`)
-        return reply(BoombadRequest(err.message))
-      }
-
-      Logger.debug(`Post.findOne found ${JSON.stringify(post)}`)
-      reply(post)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(post)
+      return reply(post)
     })
   }
 }
@@ -85,12 +72,9 @@ exports.getAll = {
     let query = request.query && request.query.latest ? { latest: true } : {}
 
     Post.find(query, (err, posts) => {
-      if (err) {
-        Logger.error(`Post.find error: ${err.message}`)
-        return reply(BoombadRequest(err.message))
-      }
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-      Logger.debug(`Post.find found ${JSON.stringify(posts)}`)
+      Logger.debug(posts)
 
       posts = posts.sort((a, b) => {
         a = new Date(a.createdAt)
@@ -102,7 +86,7 @@ exports.getAll = {
         return 0
       })
 
-      reply(posts)
+      return reply(posts)
     })
   }
 }
@@ -115,13 +99,9 @@ exports.remove = {
   },
   handler: function (request, reply) {
     Post.remove({ slug: request.params.slug }, (err) => {
-      if (err) {
-        Logger.error(`Post.remove error: ${err.message}`)
-        return reply(BoombadRequest(err.message))
-      }
-
-      Logger.debug(`Post.remove removed ${request.params.slug}`)
-      reply()
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(request.params.slug)
+      return reply()
     })
   }
 }
@@ -145,13 +125,9 @@ exports.update = {
     let {params, payload} = request
 
     Post.update({ slug: params.slug }, payload, (err) => {
-      if (err) {
-        Logger.error(`Post.update error: ${err.message}`)
-        return reply(BoombadRequest(err.message))
-      }
-
-      Logger.debug(`Post.update updated ${params.slug}`)
-      reply(params.slug)
+      if (err) return Logger.error(err), reply(BoombadRequest(err.message))
+      Logger.debug(params.slug)
+      return reply(params.slug)
     })
   }
 }

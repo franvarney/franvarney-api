@@ -16,12 +16,8 @@ function saveActivityCounts(item, index, next) {
     { date: date, total: item[date] },
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {
-      if (err) {
-        Logger.error(`GithubActivityCache.update error: ${err.message}`)
-        return next(err)
-      }
-
-      next()
+      if (err) return Logger.error(err), next(err)
+      return next()
     })
 }
 
