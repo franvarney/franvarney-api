@@ -7,6 +7,7 @@ let Favorite = new Mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
   description: { type: String },
+  why: { type: String },
   url: { type: String }
 })
 
