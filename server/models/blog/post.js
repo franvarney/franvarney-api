@@ -9,7 +9,8 @@ let Post = new Mongoose.Schema({
   summary: { type: String, required: true },
   content: { type: String, required: true },
   tags: { type: Array, index: true, default: [] },
-  latest: { type: String, index: true, default: true }
+  latest: { type: String, index: true, default: true },
+  isHtml: { type: Boolean, default: false }
 })
 
 Post.plugin(Timestamps)
