@@ -1,15 +1,15 @@
 module.exports = {
   authToken: process.env.AUTH_TOKEN || 'secret',
   env: process.env.NODE_ENV,
-  flickr: {
-    apiKey: process.env.FLICKR_API_KEY || '123abc',
-    secret: process.env.FLICKR_SECRET || '123abc'
-  },
   host: process.env.HOST || 'localhost',
   github: {
     apiUrl: 'https://api.github.com',
     username: process.env.GITHUB_USERNAME || 'username',
     accessToken: process.env.GITHUB_ACCESS_TOKEN || '123abc'
+  },
+  google: {
+    apiKey: process.env.GOOGLE_API_KEY || '123abc',
+    nearbySearchApiUrl: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
   },
   jobs: {
     frequency: {
