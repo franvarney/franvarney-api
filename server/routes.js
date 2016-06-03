@@ -2,7 +2,7 @@ const Job = require('./handlers/job')
 const Home = require('./handlers/home')
 const Github = require('./handlers/github')
 const Ping = require('./handlers/ping')
-const Places = require('./handlers/places')
+const Place = require('./handlers/place')
 const Post = require('./handlers/post')
 
 module.exports = [
@@ -18,7 +18,7 @@ module.exports = [
 
   { method: 'GET', path: '/github/activities', config: Github.getAll },
 
-  { method: 'GET', path: '/places/search', config: Places.search },
+  { method: 'GET', path: '/places/search', config: Place.search },
 
   { method: 'POST', path: '/posts', config: Post.create },
   { method: 'GET', path: '/posts/{slug}', config: Post.get },

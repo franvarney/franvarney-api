@@ -6,24 +6,25 @@ const Wreck = require('wreck')
 const Config = require('../../config')
 
 exports.search = {
+  auth: false,
   response: {
     modify: true,
     schema: Joi.array().items(Joi.object({
-      geometry: {
-        location: {
-          lat: Joi.number().required(),
-          lng: Joi.number().required()
-        }
-      },
+      location: Joi.object({
+        latitude: Joi.number().required(),
+        longitude: Joi.number().required()
+      }).rename('lat', 'latitude')
+        .rename('lng', 'longitude'),
       name: Joi.string().required(),
-      place_id: Joi.string().required()
-    }).options({ stripUnknown: true }))
+      placeId: Joi.string().required()
+    }).rename('place_id', 'placeId')
+      .options({ stripUnknown: true }))
   },
   validate: {
-    query: {
+    query: Joi.object({
       location: Joi.string().required(),
       keyword: Joi.string()
-    }
+    })
   },
   handler: {
     proxy: {
@@ -40,6 +41,11 @@ exports.search = {
         Wreck.read(response, { json: true }, (err, payload) => {
           if (payload && payload.status !== 'OK') err = payload.status
           if (err) return Logger.error(err), reply(Boom.badRequest(err))
+
+          payload.results.forEach((place) => {
+            place.location = place.geometry.location
+          })
+
           return reply(payload.results)
         });
       }
