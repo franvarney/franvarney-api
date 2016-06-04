@@ -4,6 +4,7 @@ const Joi = require('joi')
 const Wreck = require('wreck')
 
 const Config = require('../../config')
+const Places = require('../models/places')
 
 exports.search = {
   auth: false,
@@ -52,3 +53,32 @@ exports.search = {
     }
   }
 }
+
+exports.create = {
+  auth: false,
+  validate: {
+    payload: Joi.object({
+      location: Joi.object({
+        latitude: Joi.number().required(),
+        longitude: Joi.number().required()
+      }),
+      message: Joi.string().required(),
+      name: Joi.string().required(),
+      placeId: Joi.string().required(),
+    })
+  },
+  handler: function (request, reply) {
+    let {location, message, name, placeId} = request.payload
+    let newPlace = { location, name, placeId }
+
+    if (message === Config.authToken) newPlace.isVisitor = false
+    else newPlace.message = message
+
+    new Place(newPlace).save((err, created) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      Logger.debug(created)
+      return reply(created)
+    })
+  }
+}
+
