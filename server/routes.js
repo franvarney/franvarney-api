@@ -18,6 +18,8 @@ module.exports = [
 
   { method: 'GET', path: '/github/activities', config: Github.getAll },
 
+  { method: 'POST', path: '/places', config: Place.create },
+  { method: 'GET', path: '/places', config: Place.getAll },
   { method: 'GET', path: '/places/search', config: Place.search },
 
   { method: 'POST', path: '/posts', config: Post.create },
