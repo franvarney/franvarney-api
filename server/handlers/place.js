@@ -4,7 +4,7 @@ const Joi = require('joi')
 const Wreck = require('wreck')
 
 const Config = require('../../config')
-const Places = require('../models/places')
+const Place = require('../models/place')
 
 exports.create = {
   auth: false,
@@ -15,8 +15,8 @@ exports.create = {
         longitude: Joi.number().required()
       }),
       message: Joi.string().required(),
-      name: Joi.string().required(),
-      placeId: Joi.string().required(),
+      name: Joi.string(),
+      placeId: Joi.string()
     })
   },
   handler: function (request, reply) {

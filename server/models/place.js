@@ -3,7 +3,7 @@ const Timestamps = require('mongoose-timestamp')
 
 let Place = new Mongoose.Schema({
   location: {
-    latitude: { type: Number, required: true }.
+    latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
   },
   message: { type: String },
