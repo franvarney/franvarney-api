@@ -14,17 +14,26 @@ exports.create = {
         latitude: Joi.number().required(),
         longitude: Joi.number().required()
       }),
-      message: Joi.string().required(),
-      name: Joi.string(),
-      placeId: Joi.string()
-    })
+      place: {
+        id: Joi.string(),
+        name: Joi.string()
+      },
+      visitor: {
+        message: Joi.string().required(),
+        name: Joi.string()
+      }
+    }).options({ stripUnknown: true })
   },
   handler: function (request, reply) {
-    let {location, message, name, placeId} = request.payload
-    let newPlace = { location, name, placeId }
+    let {location, place, visitor} = request.payload
+    let newPlace = { location, place, visitor }
 
-    if (message === Config.authToken) newPlace.isVisitor = false
-    else newPlace.message = message
+    if (visitor.message === Config.authToken) {
+      newPlace.visitor = {
+        message: null,
+        name: 'Fran Varney'
+      }
+    } else if (!visitor.name) newPlace.visitor.name = 'Anonymous'
 
     new Place(newPlace).save((err, created) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))

@@ -7,9 +7,14 @@ let Place = new Mongoose.Schema({
     longitude: { type: Number, required: true }
   },
   message: { type: String },
-  name: { type: String },
-  placeId: { type: String },
-  isVisitor: { type: Boolean, default: true }
+  place: {
+    id: { type: String },
+    name: { type: String }
+  },
+  visitor: {
+    message: { type: String },
+    name: { type: String, required: true }
+  }
 })
 
 Place.plugin(Timestamps)
