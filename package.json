@@ -25,10 +25,10 @@
     "node": "6.x"
   },
   "dependencies": {
-    "@modulus/logger": "1.2.0",
     "boom": "3.1.1",
     "cron": "1.1.0",
     "flickrapi": "0.4.1",
+    "franston": "0.2.0",
     "h2o2": "5.1.0",
     "hapi": "11.1.3",
     "hapi-auth-bearer-token": "4.0.0",
