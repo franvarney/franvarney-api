@@ -1,4 +1,4 @@
-const Logger = require('@modulus/logger')('jobs/github-activity')
+const Logger = require('franston')('jobs/github-activity')
 const Request = require('request')
 
 const Config = require('../../config')
@@ -24,7 +24,7 @@ function parseEvents(body, done) {
 
   let events = body.filter((event) => {
     return EVENT_TYPES.indexOf(event.type) > -1 &&
-      new Date(event.created_at) < yesterday
+           new Date(event.created_at) < yesterday
   })
 
   if (events) {
@@ -55,7 +55,7 @@ function getEvents(page, done) {
     qs: {
       access_token: Config.github.accessToken,
       per_page: PER_PAGE,
-      page: page
+      page
     },
     json: true
   }

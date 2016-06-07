@@ -1,5 +1,5 @@
 const Boom = require('boom')
-const Logger = require('@modulus/logger')('handlers/places')
+const Logger = require('franston')('handlers/places')
 const Joi = require('joi')
 const Wreck = require('wreck')
 
@@ -37,8 +37,7 @@ exports.create = {
 
     new Place(newPlace).save((err, created) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(created)
-      return reply(created)
+      return Logger.debug(created), reply(created)
     })
   }
 }
@@ -94,7 +93,7 @@ exports.search = {
             place.location = place.geometry.location
           })
 
-          return reply(payload.results)
+          return Logger.debug(payload.results), reply(payload.results)
         });
       }
     }

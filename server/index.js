@@ -1,5 +1,5 @@
 const {Server} = require('hapi')
-const Logger = require('@modulus/logger')('server/index')
+const Logger = require('franston')('server/index')
 const Mongoose = require('mongoose')
 
 const Auth = require('./handlers/auth')

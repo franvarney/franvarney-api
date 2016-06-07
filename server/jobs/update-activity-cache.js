@@ -1,4 +1,4 @@
-const Logger = require('@modulus/logger')('jobs/update-cache')
+const Logger = require('franston')('jobs/update-cache')
 
 const GithubActivity = require('../models/github/activity')
 const GithubActivityCache = require('../models/github/activity-cache')
@@ -12,8 +12,7 @@ function saveActivityCounts(item, index, next) {
   if (item[date] > 80) item[date] -= 35
 
   GithubActivityCache.update(
-    { date: date },
-    { date: date, total: item[date] },
+    { date }, { date, total: item[date] },
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {
       if (err) return Logger.error(err), next(err)

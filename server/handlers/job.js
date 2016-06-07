@@ -1,6 +1,6 @@
 const Boom = require('boom')
 const Joi = require('joi')
-const Logger = require('@modulus/logger')('handlers/job')
+const Logger = require('franston')('handlers/job')
 
 const Job = require('../models/job')
 
@@ -39,8 +39,7 @@ exports.create = {
 
     new Job(newJob).save((err, created) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(created)
-      return reply(created)
+      return Logger.debug(created), reply(created)
     })
   }
 }
@@ -55,8 +54,7 @@ exports.get = {
   handler: function (request, reply) {
     Job.findOne({ id: request.params.id }, (err, job) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(job)
-      return reply(job)
+      return Logger.debug(job), reply(job)
     })
   }
 }
@@ -77,8 +75,7 @@ exports.getAll = {
 
     Job.find(query, (err, jobs) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(jobs)
-      return reply(jobs)
+      return Logger.debug(jobs), reply(jobs)
     })
   }
 }
@@ -92,8 +89,7 @@ exports.remove = {
   handler: function (request, reply) {
     Job.remove({ id: request.params.id }, (err) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(request.params.id)
-      return reply()
+      return Logger.debug(request.params.id), reply()
     })
   }
 }
@@ -122,8 +118,7 @@ exports.update = {
 
     Job.update({ id: params.id }, payload, (err) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(params.id)
-      reply(params.id)
+      return Logger.debug(params.id), reply(params.id)
     })
   }
 }

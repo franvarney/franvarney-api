@@ -1,6 +1,6 @@
 const Boom = require('boom')
 const Joi = require('joi')
-const Logger = require('@modulus/logger')('handlers/post')
+const Logger = require('franston')('handlers/post')
 const Slug = require('slug')
 
 const Post = require('../models/blog/post')
@@ -38,8 +38,7 @@ exports.create = {
         { multi: true },
         (err, count) => {
           if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-          Logger.debug(created)
-          return reply(created)
+          return Logger.debug(created), reply(created)
         })
     })
   }
@@ -55,8 +54,7 @@ exports.get = {
   handler: function (request, reply) {
     Post.findOne({ slug: request.params.slug }, (err, post) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(post)
-      return reply(post)
+      return Logger.debug(post), reply(post)
     })
   }
 }
@@ -74,19 +72,17 @@ exports.getAll = {
     Post.find(query, (err, posts) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
 
-      Logger.debug(posts)
-
       posts = posts.sort((a, b) => {
         a = new Date(a.createdAt)
         b = new Date(b.createdAt)
 
-        if(a < b) return 1
-        if(a > b) return -1
+        if (a < b) return 1
+        if (a > b) return -1
 
         return 0
       })
 
-      return reply(posts)
+      return Logger.debug(posts), reply(posts)
     })
   }
 }
@@ -100,8 +96,7 @@ exports.remove = {
   handler: function (request, reply) {
     Post.remove({ slug: request.params.slug }, (err) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      Logger.debug(request.params.slug)
-      return reply()
+      return Logger.debug(request.params.slug), reply()
     })
   }
 }
@@ -126,8 +121,7 @@ exports.update = {
 
     Post.update({ slug: params.slug }, payload, (err) => {
       if (err) return Logger.error(err), reply(BoombadRequest(err.message))
-      Logger.debug(params.slug)
-      return reply(params.slug)
+      return  Logger.debug(params.slug), reply(params.slug)
     })
   }
 }
