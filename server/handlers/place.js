@@ -20,7 +20,7 @@ exports.create = {
       },
       visitor: {
         message: Joi.string().required(),
-        name: Joi.string()
+        name: Joi.string().allow("", null)
       }
     }).options({ stripUnknown: true })
   },
