@@ -37,9 +37,17 @@ exports.create = {
 
     new Place(newPlace).save((err, created) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      return Logger.debug(created), reply(created)
+      return /*Lgger.debug(created),*/ reply(created)
     })
   }
+}
+
+exports.delete = function (request, reply) {
+  Place.remove({ _id: request.params.id }, (err, count) => {
+    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    if (!count) return Logger.error('Not found'), reply(Boom.notFound('Place not found'))
+    return reply()
+  })
 }
 
 exports.getAll = {
@@ -47,7 +55,7 @@ exports.getAll = {
   handler: function (request, reply) {
     Place.find({}, (err, places) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      return Logger.debug(places), reply(places)
+      return /*Logger.debug(places),*/ reply(places)
     })
   }
 }
@@ -93,7 +101,7 @@ exports.search = {
             place.location = place.geometry.location
           })
 
-          return Logger.debug(payload.results), reply(payload.results)
+          return /*Logger.debug(payload.results),*/ reply(payload.results)
         });
       }
     }
