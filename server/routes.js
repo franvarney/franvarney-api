@@ -92,6 +92,14 @@ module.exports = [
   },
 
   {
+    method: 'DELETE',
+    path: '/places/:id',
+    config: {
+      handler: Place.delete
+    }
+  },
+
+  {
     method: 'GET',
     path: '/places',
     config: Place.getAll
