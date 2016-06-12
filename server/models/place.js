@@ -14,7 +14,8 @@ let Place = new Mongoose.Schema({
   visitor: {
     message: { type: String },
     name: { type: String, required: true }
-  }
+  },
+  isVisitor: { type: Boolean, default: true }
 })
 
 Place.plugin(Timestamps)
