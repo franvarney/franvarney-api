@@ -93,7 +93,7 @@ module.exports = [
 
   {
     method: 'DELETE',
-    path: '/places/:id',
+    path: '/places/{id}',
     config: {
       handler: Place.delete
     }
@@ -109,6 +109,14 @@ module.exports = [
     method: 'GET',
     path: '/places/search',
     config: Place.search
+  },
+
+  {
+    method: 'PUT',
+    path: '/places/{id}',
+    config: {
+      handler: Place.update
+    }
   },
 
   {
