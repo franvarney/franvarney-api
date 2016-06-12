@@ -36,17 +36,21 @@ exports.create = {
     } else if (!visitor.name) newPlace.visitor.name = 'Anonymous'
 
     new Place(newPlace).save((err, created) => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-      return /*Lgger.debug(created),*/ reply(created)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err))
+      return /*Logger.debug(created),*/ reply(created).code(201)
     })
   }
 }
 
 exports.delete = function (request, reply) {
-  Place.remove({ _id: request.params.id }, (err, count) => {
+  Place.findById(request.params.id, function (err, place) {
     if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    if (!count) return Logger.error('Not found'), reply(Boom.notFound('Place not found'))
-    return reply()
+    if (!place) return Logger.error('Place not found'), reply(Boom.notFound('Place not found'))
+
+    place.remove((err) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err))
+      return reply().code(204)
+    });
   })
 }
 
@@ -54,7 +58,8 @@ exports.getAll = {
   auth: false,
   handler: function (request, reply) {
     Place.find({}, (err, places) => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+      console.log(err, places)
+      if (err) return Logger.error(err), reply(Boom.badRequest(err))
       return /*Logger.debug(places),*/ reply(places)
     })
   }
@@ -106,4 +111,33 @@ exports.search = {
       }
     }
   }
+}
+
+exports.update = function (request, reply) {
+  Place.findById(request.params.id, function (err, place) {
+    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+
+    if (!place) return Logger.error('Place not found'), reply(Boom.notFound('Place not found'))
+
+    if (place.visitor && request.payload.visitor) {
+      place.visitor = Object.assign(place.visitor, request.payload.visitor)
+    }
+
+    if (place.place && request.payload.place) {
+      place.place = Object.assign(place.place, request.payload.place)
+    }
+
+    if (place.location && request.payload.location) {
+      place.location = Object.assign(place.location, request.payload.location)
+    }
+
+    if (place.isVistor !== request.payload.isVisitor) {
+      place.isVisitor = !request.payload.isVistor
+    }
+
+    place.save((err) => {
+      if (err) return Logger.error(err), reply(Boom.badRequest(err))
+      return reply(place)
+    });
+  })
 }
