@@ -4,6 +4,7 @@ const Home = require('./handlers/home')
 const Github = require('./handlers/github')
 const Ping = require('./handlers/ping')
 const Place = require('./handlers/place')
+const PlaceSchema = require('./schemas/place')
 const Post = require('./handlers/post')
 
 module.exports = [
@@ -102,7 +103,13 @@ module.exports = [
   {
     method: 'GET',
     path: '/places',
-    config: Place.getAll
+    config: {
+      auth: false,
+      validate: {
+        query: PlaceSchema.getAllQuery
+      },
+      handler: Place.getAll
+    }
   },
 
   {
