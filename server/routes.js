@@ -6,6 +6,7 @@ const Ping = require('./handlers/ping')
 const Place = require('./handlers/place')
 const PlaceSchema = require('./schemas/place')
 const Post = require('./handlers/post')
+const PostSchema = require('./handlers/post')
 
 module.exports = [
   {
@@ -144,19 +145,33 @@ module.exports = [
   {
     method: 'POST',
     path: '/posts',
-    config: Post.create
+    config: {
+      validate: {
+        payload: PostSchema.create
+      },
+      handler: Post.create
+    }
   },
 
   {
     method: 'GET',
     path: '/posts/{slug}',
-    config: Post.get
+    config: {
+      auth: false,
+      handler: Post.get
+    }
   },
 
   {
     method: 'GET',
     path: '/posts',
-    config: Post.getAll
+    config: {
+      auth: false,
+      validate: {
+        query: PostSchema.getAllQuery
+      },
+      handler: Post.getAll
+    }
   },
 
   {
@@ -168,6 +183,11 @@ module.exports = [
   {
     method: 'PUT',
     path: '/posts/{slug}',
-    config: Post.update
+    config: {
+      validate: {
+        payload: PostSchema.update
+      },
+      handler: Post.update
+    }
   }
 ]
