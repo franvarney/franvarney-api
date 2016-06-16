@@ -33,7 +33,19 @@ exports.create = {
         message: null,
         name: 'Fran Varney'
       }
-    } else if (!visitor.name) newPlace.visitor.name = 'Anonymous'
+      newPlace.isVisitor = false
+    } else if (visitor.name === Config.authToken) {
+      newPlace.visitor = {
+        message: visitor.message,
+        name: 'Fran Varney'
+      }
+      newPlace.isVisitor = false
+    } else if (!visitor.name) {
+      newPlace.visitor.name = 'Anonymous'
+      newPlace.isVisitor = false
+    } else {
+      newPlace.isVisitor = false
+    }
 
     new Place(newPlace).save((err, created) => {
       if (err) return Logger.error(err), reply(Boom.badRequest(err))
@@ -54,15 +66,18 @@ exports.delete = function (request, reply) {
   })
 }
 
-exports.getAll = {
-  auth: false,
-  handler: function (request, reply) {
-    Place.find({}, (err, places) => {
-      console.log(err, places)
-      if (err) return Logger.error(err), reply(Boom.badRequest(err))
-      return /*Logger.debug(places),*/ reply(places)
-    })
+exports.getAll = function (request, reply) {
+  let query = {}
+
+  if (request.query.visitors !== null &&
+      request.query.visitors !== undefined) {
+    query = { isVisitor: request.query.visitors }
   }
+
+  Place.find(query, (err, places) => {
+    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    return /*Logger.debug(places),*/ reply(places)
+  })
 }
 
 exports.search = {
@@ -131,8 +146,8 @@ exports.update = function (request, reply) {
       place.location = Object.assign(place.location, request.payload.location)
     }
 
-    if (place.isVistor !== request.payload.isVisitor) {
-      place.isVisitor = !request.payload.isVistor
+    if (place.isVisitor !== request.payload.isVisitor) {
+      place.isVisitor = request.payload.isVisitor
     }
 
     place.save((err) => {
