@@ -96,6 +96,7 @@ module.exports = [
         payload: PlaceSchema.create
       },
       handler: Place.create
+    }
   },
 
   {
@@ -177,7 +178,9 @@ module.exports = [
   {
     method: 'DELETE',
     path: '/posts/{slug}',
-    config: Post.remove
+    config: {
+      handler: Post.remove
+    }
   },
 
   {

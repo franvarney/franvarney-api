@@ -66,7 +66,7 @@ exports.remove = function (request, reply) {
   })
 }
 
-exports.update = {function (request, reply) {
+exports.update = function (request, reply) {
   let {params, payload} = request
 
   Post.update({ slug: params.slug }, payload, (err) => {
