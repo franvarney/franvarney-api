@@ -89,7 +89,12 @@ module.exports = [
   {
     method: 'POST',
     path: '/places',
-    config: Place.create
+    config: {
+      auth: false,
+      validate: {
+        payload: PlaceSchema.create
+      },
+      handler: Place.create
   },
 
   {

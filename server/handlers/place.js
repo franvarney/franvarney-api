@@ -6,52 +6,33 @@ const Wreck = require('wreck')
 const Config = require('../../config')
 const Place = require('../models/place')
 
-exports.create = {
-  auth: false,
-  validate: {
-    payload: Joi.object({
-      location: Joi.object({
-        latitude: Joi.number().required(),
-        longitude: Joi.number().required()
-      }),
-      place: {
-        id: Joi.string(),
-        name: Joi.string()
-      },
-      visitor: {
-        message: Joi.string().required(),
-        name: Joi.string().allow("", null)
-      }
-    }).options({ stripUnknown: true })
-  },
-  handler: function (request, reply) {
-    let {location, place, visitor} = request.payload
-    let newPlace = { location, place, visitor }
+exports.create = function (request, reply) {
+  let {location, place, visitor} = request.payload
+  let newPlace = { location, place, visitor }
 
-    if (visitor.message === Config.authToken) {
-      newPlace.visitor = {
-        message: null,
-        name: 'Fran Varney'
-      }
-      newPlace.isVisitor = false
-    } else if (visitor.name === Config.authToken) {
-      newPlace.visitor = {
-        message: visitor.message,
-        name: 'Fran Varney'
-      }
-      newPlace.isVisitor = false
-    } else if (!visitor.name) {
-      newPlace.visitor.name = 'Anonymous'
-      newPlace.isVisitor = false
-    } else {
-      newPlace.isVisitor = false
+  if (visitor.message === Config.authToken) {
+    newPlace.visitor = {
+      message: null,
+      name: 'Fran Varney'
     }
-
-    new Place(newPlace).save((err, created) => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err))
-      return /*Logger.debug(created),*/ reply(created).code(201)
-    })
+    newPlace.isVisitor = false
+  } else if (visitor.name === Config.authToken) {
+    newPlace.visitor = {
+      message: visitor.message,
+      name: 'Fran Varney'
+    }
+    newPlace.isVisitor = false
+  } else if (!visitor.name) {
+    newPlace.visitor.name = 'Anonymous'
+    newPlace.isVisitor = false
+  } else {
+    newPlace.isVisitor = false
   }
+
+  new Place(newPlace).save((err, created) => {
+    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    return /*Logger.debug(created),*/ reply(created).code(201)
+  })
 }
 
 exports.delete = function (request, reply) {
