@@ -120,7 +120,17 @@ module.exports = [
   {
     method: 'GET',
     path: '/places/search',
-    config: Place.search
+    config: {
+      auth: false,
+      validate: {
+        query: Place.searchQuery
+      },
+      response: {
+        modify: true,
+        schema: Place.response
+      },
+      handler: Place.search
+    }
   },
 
   {
