@@ -2,7 +2,7 @@ const Logger = require('franston')('jobs/github-activity')
 const Request = require('request')
 
 const Config = require('../../config')
-const GithubActivityModel = require('../models/github/activity')
+const GithubActivity = require('../models/github-activity')
 const Recurse = require('../helpers/recurse')
 const DaysAgo = require('../helpers/days-ago')
 
@@ -10,7 +10,7 @@ const EVENT_TYPES = ['IssuesEvent', 'PullRequestEvent', 'PushEvent']
 const PER_PAGE = 100
 
 function saveActivities(item, index, next) {
-  GithubActivityModel.update(
+  GithubActivity.update(
     { id: item.id }, item,
     { upsert: true, setDefaultsOnInsert: true },
     (err) => {

@@ -5,10 +5,10 @@ const Mongoose = require('mongoose')
 const Auth = require('./handlers/auth')
 const Config = require('../config')
 const CronJob = require('../server/jobs')
-const GithubActivity = require('../server/jobs/get-github-activity')
+const GithubActivity = require('./jobs/get-github-activity')
 const Plugins = require('./plugins')
 const Routes = require('./routes')
-const UpdateCache = require('../server/jobs/update-activity-cache')
+const UpdateCache = require('./jobs/update-activity-cache')
 
 let server = new Server()
 
