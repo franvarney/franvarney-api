@@ -10,13 +10,15 @@ const EVENT_TYPES = ['IssuesEvent', 'PullRequestEvent', 'PushEvent']
 const PER_PAGE = 100
 
 function saveActivities(item, index, next) {
-  GithubActivity.update(
-    { id: item.id }, item,
-    { upsert: true, setDefaultsOnInsert: true },
-    (err) => {
-      if (err) return Logger.error(err), next(err)
-      return next()
-    })
+  let options = {
+    upsert: true,
+    setDefaultsOnInsert: true
+  }
+
+  GithubActivity.update({ id: item.id }, item, options, (err) => {
+    if (err) return Logger.error(err), next(err)
+    return next()
+  })
 }
 
 function parseEvents(body, done) {
@@ -68,10 +70,7 @@ function getEvents(page, done) {
         if (err) return done(err)
         getEvents(++page, done)
       })
-    } else {
-      Logger.error(body.message)
-      return done()
-    }
+    } else return Logger.error(body.message), done()
   })
 }
 
@@ -79,7 +78,7 @@ module.exports = function getGithubActivity() {
   Logger.info('Running job...')
 
   getEvents(1, (err) => {
-    if (err) return Logger.error(`error: ${err.message}`)
-    Logger.info('...completed')
+    if (err) return Logger.error(err)
+    return Logger.info('...completed')
   })
 }
