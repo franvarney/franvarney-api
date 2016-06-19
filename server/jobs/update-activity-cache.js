@@ -2,38 +2,35 @@ const Logger = require('franston')('jobs/update-cache')
 
 const GithubActivity = require('../models/github-activity')
 const GithubCache = require('../models/github-cache')
-const Recurse = require('../helpers/recurse')
+const Series = require('run-series')
 
-function saveActivityCounts(item, index, next) {
-  let date = Object.keys(item)[0]
+let dateMap = {}
 
-  // keeps the front-end graph looking pretty
-  if (item[date] > 60) item[date] -= 25
-  if (item[date] > 80) item[date] -= 35
+function saveActivityCounts(date, next) {
+  let count = dateMap[date]
+  let options = {
+    upsert: true,
+    setDefaultsOnInsert: true
+  }
 
-  GithubCache.update(
-    { date }, { date, total: item[date] },
-    { upsert: true, setDefaultsOnInsert: true },
-    (err) => {
-      if (err) return Logger.error(err), next(err)
-      return next()
-    })
+  GithubCache.update({ date }, { date, total: count }, options, (err) => {
+    if (err) return Logger.error(err), next(err)
+    return next()
+  })
 }
 
 function updateCache(done) {
   GithubActivity.find({}, (err, found) => {
     if (err) return done(err)
 
-    let dateMap = {}
-
     found.forEach((event) => {
       let date = new Date(event.created).toDateString()
 
-      if (dateMap.hasOwnProperty(date)) dateMap[date] += parseInt(event.count)
-      else dateMap[date] = parseInt(event.count)
+      if (dateMap.hasOwnProperty(date)) dateMap[date] += parseInt(event.count, 10)
+      else dateMap[date] = parseInt(event.count, 10)
     })
 
-    Recurse(dateMap, saveActivityCounts, done)
+    return Series(Object.keys(dateMap).map((date) => saveActivityCounts.bind(null, date)))
   })
 }
 
@@ -42,6 +39,6 @@ module.exports = function updateActivityCache() {
 
   updateCache((err) => {
     if (err) return Logger.error(`error: ${err.message}`)
-    Logger.info('...completed')
+    return Logger.info('...completed')
   })
 }
