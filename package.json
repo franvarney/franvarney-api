@@ -44,6 +44,7 @@
   "devDependencies": {
     "code": "2.0.1",
     "lab": "10.8.2",
-    "sinon": "1.17.2"
+    "sinon": "1.17.2",
+    "standard": "7.1.2"
   }
 }
