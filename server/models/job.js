@@ -19,7 +19,7 @@ let Job = new Mongoose.Schema({
 
 Job.plugin(Timestamps)
 
-Job.pre('save', (next) => {
+Job.pre('save', function (next) {
   Mongoose.models['Job'].find({
     employer: this.employer,
     dates: {
@@ -29,7 +29,7 @@ Job.pre('save', (next) => {
   }, (err, results) => {
     if (err) return next(new Error(err.message))
     if (results > 0) return next(new Error('Job already exists'))
-    next()
+    return next()
   })
 })
 

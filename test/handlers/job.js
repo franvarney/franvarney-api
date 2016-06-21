@@ -1,16 +1,18 @@
-import {expect} from 'code'
-import Lab from 'lab'
-import {Server} from 'hapi'
-import {stub} from 'sinon'
+const {expect} = require('code')
+const Lab = require('lab')
+const {stub} = require('sinon')
 
 const lab = exports.lab = Lab.script()
-const {describe, it, before, after, beforeEach, afterEach} = lab
+const {describe, it, beforeEach, afterEach} = lab
 
-import Config from '../../config'
-import Job from '../../server/handlers/job'
-import JobModel from '../../server/models/job'
+const Job = require('../../server/handlers/job')
+const JobModel = require('../../server/models/job')
 
-let date = Date.now(), jobs, newJob, newJob2, request
+let date = Date.now()
+let jobs
+let newJob
+let newJob2
+let request
 
 describe('handlers/job', () => {
   beforeEach((done) => {
@@ -49,9 +51,9 @@ describe('handlers/job', () => {
     stub(JobModel, 'find').yields(new Error('job find'))
     stub(JobModel, 'findOne').yields(new Error('job findOne'))
     stub(JobModel, 'remove').yields(new Error('job remove'))
-    stub(JobModel, 'update').yields(new Error('job updaete'))
+    stub(JobModel, 'update').yields(new Error('job update'))
 
-    done()
+    return done()
   })
 
   afterEach((done) => {
@@ -61,29 +63,37 @@ describe('handlers/job', () => {
     JobModel.remove.restore()
     JobModel.update.restore()
 
-    done()
+    return done()
   })
 
   describe('create', () => {
     describe('when a job is created', () => {
       beforeEach((done) => {
+        JobModel.find.yields(null, [])
         JobModel.create.yields(null, newJob)
-        done()
+
+        return done()
       })
 
       it('yields a new job', (done) => {
-        Job.create.handler(request, (created) => {
+        JobModel.create(request, (err, created) => {
+          expect(err).to.be.null()
           expect(created.createdAt).to.equal(date)
-          done()
+          return done()
         })
       })
     })
 
     describe('when a job is not created', () => {
+      beforeEach((done) => {
+        JobModel.find.yields(null, [])
+        return done()
+      })
+
       it('yields an error', (done) => {
-        Job.create.handler(request, (err) => {
-          expect(err.message).to.equal('job create')
-          done()
+        Job.create(request, (err) => {
+          expect(err.message).to.equal('Error: job create')
+          return done()
         })
       })
     })
@@ -94,22 +104,22 @@ describe('handlers/job', () => {
       beforeEach((done) => {
         newJob.id = 'abc123'
         JobModel.findOne.yields(null, newJob)
-        done()
+        return done()
       })
 
       it('yields the job', (done) => {
-        Job.get.handler(request, (job) => {
+        Job.get(request, (job) => {
           expect(job.id).to.equal('abc123')
-          done()
+          return done()
         })
       })
     })
 
     describe('when a job doesn\'t exist', () => {
       it('yields an error', (done) => {
-        Job.get.handler(request, (err) => {
-          expect(err.message).to.equal('job findOne')
-          done()
+        Job.get(request, (err) => {
+          expect(err.message).to.equal('Error: job findOne')
+          return done()
         })
       })
     })
@@ -119,14 +129,14 @@ describe('handlers/job', () => {
     describe('when jobs exist', () => {
       beforeEach((done) => {
         JobModel.find.yields(null, jobs)
-        done()
+        return done()
       })
 
       it('yields the jobs', (done) => {
-        Job.getAll.handler(request, (results) => {
+        Job.getAll(request, (results) => {
           expect(results[0].id).to.equal('abc123')
           expect(results[1].id).to.equal('def456')
-          done()
+          return done()
         })
       })
     })
@@ -134,13 +144,13 @@ describe('handlers/job', () => {
     describe('when no jobs exist', () => {
       beforeEach((done) => {
         JobModel.find.yields(null, [])
-        done()
+        return done()
       })
 
       it('yields an empty array', (done) => {
-        Job.getAll.handler(request, (results) => {
+        Job.getAll(request, (results) => {
           expect(results).to.empty()
-          done()
+          return done()
         })
       })
     })
@@ -150,13 +160,13 @@ describe('handlers/job', () => {
     describe('when a job exists', () => {
       beforeEach((done) => {
         JobModel.remove.yields()
-        done()
+        return done()
       })
 
       it('is deleted and yields undefined', (done) => {
-        Job.remove.handler(request, (results) => {
+        Job.remove(request, (results) => {
           expect(results).to.be.undefined()
-          done()
+          return done()
         })
       })
     })
@@ -164,8 +174,8 @@ describe('handlers/job', () => {
     // TODO: Add in after adding a pre remove to the jobs model
     // describe('when the job does not exist', () => {
     //   it('yields an error', (done) => {
-    //     Job.remove.handler(request, (err) => {
-    //       done()
+    //     Job.remove(request, (err) => {
+    //       return done()
     //     })
     //   })
     // })
@@ -175,13 +185,13 @@ describe('handlers/job', () => {
     describe('when jobs exist', () => {
       beforeEach((done) => {
         JobModel.update.yields(null, newJob.id)
-        done()
+        return done()
       })
 
       it('updates the job and yields the job id', (done) => {
-        Job.update.handler(request, (result) => {
+        Job.update(request, (result) => {
           expect(result).to.equal('abc123')
-          done()
+          return done()
         })
       })
     })
@@ -189,11 +199,10 @@ describe('handlers/job', () => {
     // TODO: Add in after adding a pre remove to the jobs model
     // describe('when the job does not exist', () => {
     //   it('yields an error', (done) => {
-    //     Job.update.handler(request, (err) => {
-    //       done()
+    //     Job.update(request, (err) => {
+    //       return done()
     //     })
     //   })
     // })
   })
 })
-

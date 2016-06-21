@@ -20,7 +20,7 @@ exports.create = function (request, reply) {
     tasks
   }
 
-  new Job(newJob).save((err, created) => {
+  Job.create(newJob, (err, created) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
     return /* Logger.debug(created), */ reply(created)
   })
