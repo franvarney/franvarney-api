@@ -11,7 +11,7 @@ module.exports = function (order, a, b) {
     b = (a = b, temp)
   }
 
-  a = new Date(a.date), b = new Date(b.date)
+  (a = new Date(a.date), b = new Date(b.date))
 
   if (a < b) return -1
   if (a > b) return 1

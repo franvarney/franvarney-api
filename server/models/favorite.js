@@ -11,9 +11,9 @@ let Favorite = new Mongoose.Schema({
   url: { type: String }
 })
 
-Job.plugin(Timestamps)
+Favorite.plugin(Timestamps)
 
-Job.pre('save', (next) => {
+Favorite.pre('save', (next) => {
   Mongoose.models['Favorite'].find({
     name: this.name,
     type: this.type

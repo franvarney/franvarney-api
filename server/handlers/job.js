@@ -6,7 +6,7 @@ const Job = require('../models/job')
 exports.create = function (request, reply) {
   let {employer, location, dates, tasks, title} = request.payload
 
-  let newJob =  {
+  let newJob = {
     employer,
     location: {
       city: location.city,
@@ -21,15 +21,15 @@ exports.create = function (request, reply) {
   }
 
   new Job(newJob).save((err, created) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(created),*/ reply(created)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(created), */ reply(created)
   })
 }
 
 exports.get = function (request, reply) {
   Job.findOne({ id: request.params.id }, (err, job) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(job),*/ reply(job)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(job), */ reply(job)
   })
 }
 
@@ -41,15 +41,15 @@ exports.getAll = function (request, reply) {
   }
 
   Job.find(query, (err, jobs) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(jobs),*/ reply(jobs)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(jobs), */ reply(jobs)
   })
 }
 
 exports.remove = function (request, reply) {
   Job.remove({ id: request.params.id }, (err) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(request.params.id),*/ reply()
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(request.params.id), */ reply()
   })
 }
 
@@ -57,7 +57,7 @@ exports.update = function (request, reply) {
   let {params, payload} = request
 
   Job.update({ id: params.id }, payload, (err) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(params.id),*/ reply(params.id)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(params.id), */ reply(params.id)
   })
 }

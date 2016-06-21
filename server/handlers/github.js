@@ -6,9 +6,9 @@ const GithubCache = require('../models/github-cache')
 
 exports.getAll = function (request, reply) {
   GithubCache.find({}, (err, activities) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
 
     activities.sort(DateSort.bind(null, 1))
-    return Logger.debug(activities), reply(activities)
+    return (Logger.debug(activities), reply(activities))
   })
 }

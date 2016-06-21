@@ -11,7 +11,7 @@ exports.create = Joi.object({
   },
   visitor: {
     message: Joi.string().required(),
-    name: Joi.string().allow("", null)
+    name: Joi.string().allow('', null)
   }
 }).options({ stripUnknown: true })
 

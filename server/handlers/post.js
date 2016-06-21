@@ -1,5 +1,4 @@
 const Boom = require('boom')
-const Joi = require('joi')
 const Logger = require('franston')('handlers/post')
 const Slug = require('slug')
 
@@ -8,7 +7,7 @@ const Post = require('../models/blog/post')
 exports.create = function (request, reply) {
   let {caption, content, image, summary, tags, title} = request.payload
 
-  let newPost =  {
+  let newPost = {
     title,
     slug: Slug(title, { lower: true }),
     image,
@@ -19,23 +18,23 @@ exports.create = function (request, reply) {
   }
 
   new Post(newPost).save((err, created) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
 
     Post.update(
       { slug: { $ne: created.slug } },
       { latest: false },
       { multi: true },
       (err, count) => {
-        if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-        return Logger.debug(created), reply(created)
+        if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
+        return /* Logger.debug(created), */ reply(created)
       })
   })
 }
 
 exports.get = function (request, reply) {
   Post.findOne({ slug: request.params.slug }, (err, post) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-    return Logger.debug(post), reply(post)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
+    return /* Logger.debug(post), */ reply(post)
   })
 }
 
@@ -43,7 +42,7 @@ exports.getAll = function (request, reply) {
   let query = request.query && request.query.latest ? { latest: true } : {}
 
   Post.find(query, (err, posts) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
 
     posts = posts.sort((a, b) => {
       a = new Date(a.createdAt)
@@ -55,14 +54,14 @@ exports.getAll = function (request, reply) {
       return 0
     })
 
-    return Logger.debug(posts), reply(posts)
+    return /* Logger.debug(posts), */ reply(posts)
   })
 }
 
 exports.remove = function (request, reply) {
   Post.remove({ slug: request.params.slug }, (err) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err.message))
-    return Logger.debug(request.params.slug), reply()
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
+    return /* Logger.debug(request.params.slug), */ reply()
   })
 }
 
@@ -70,7 +69,7 @@ exports.update = function (request, reply) {
   let {params, payload} = request
 
   Post.update({ slug: params.slug }, payload, (err) => {
-    if (err) return Logger.error(err), reply(BoombadRequest(err.message))
-    return  Logger.debug(params.slug), reply(params.slug)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
+    return /* Logger.debug(params.slug), */ reply(params.slug)
   })
 }

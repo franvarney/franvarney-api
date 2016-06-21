@@ -1,6 +1,5 @@
 const Boom = require('boom')
 const Logger = require('franston')('handlers/places')
-const Joi = require('joi')
 const Wreck = require('wreck')
 
 const Config = require('../../config')
@@ -30,20 +29,20 @@ exports.create = function (request, reply) {
   }
 
   new Place(newPlace).save((err, created) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(created),*/ reply(created).code(201)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(created), */ reply(created).code(201)
   })
 }
 
 exports.delete = function (request, reply) {
   Place.findById(request.params.id, function (err, place) {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    if (!place) return Logger.error('Place not found'), reply(Boom.notFound('Place not found'))
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    if (!place) return (Logger.error('Place not found'), reply(Boom.notFound('Place not found')))
 
     place.remove((err) => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err))
+      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
       return reply().code(204)
-    });
+    })
   })
 }
 
@@ -56,8 +55,8 @@ exports.getAll = function (request, reply) {
   }
 
   Place.find(query, (err, places) => {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
-    return /*Logger.debug(places),*/ reply(places)
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return /* Logger.debug(places), */ reply(places)
   })
 }
 
@@ -70,28 +69,30 @@ exports.search = {
       else url = `${url}&radius=5000`
 
       Logger.debug(`Proxying to ${url}`)
-      return callback(null, url);
+      return callback(null, url)
     },
     onResponse: function (err, response, request, reply) {
+      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+
       Wreck.read(response, { json: true }, (err, payload) => {
         if (payload && payload.status !== 'OK') err = payload.status
-        if (err) return Logger.error(err), reply(Boom.badRequest(err))
+        if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
 
         payload.results.forEach((place) => {
           place.location = place.geometry.location
         })
 
-        return /*Logger.debug(payload.results),*/ reply(payload.results)
-      });
+        return /* Logger.debug(payload.results), */ reply(payload.results)
+      })
     }
   }
 }
 
 exports.update = function (request, reply) {
   Place.findById(request.params.id, function (err, place) {
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
 
-    if (!place) return Logger.error('Place not found'), reply(Boom.notFound('Place not found'))
+    if (!place) return (Logger.error('Place not found'), reply(Boom.notFound('Place not found')))
 
     if (place.visitor && request.payload.visitor) {
       place.visitor = Object.assign(place.visitor, request.payload.visitor)
@@ -110,8 +111,8 @@ exports.update = function (request, reply) {
     }
 
     place.save((err) => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err))
+      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
       return reply(place)
-    });
+    })
   })
 }

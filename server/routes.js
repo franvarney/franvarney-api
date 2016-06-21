@@ -41,7 +41,7 @@ module.exports = [
     path: '/jobs',
     config: {
       validate: {
-        payload: JobSchema.create,
+        payload: JobSchema.create
       },
       handler: Job.create
     }

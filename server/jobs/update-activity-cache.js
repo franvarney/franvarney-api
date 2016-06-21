@@ -6,7 +6,7 @@ const Series = require('run-series')
 
 let dateMap = {}
 
-function saveActivityCounts(date, next) {
+function saveActivityCounts (date, next) {
   let count = dateMap[date]
   let options = {
     upsert: true,
@@ -14,12 +14,12 @@ function saveActivityCounts(date, next) {
   }
 
   GithubCache.update({ date }, { date, total: count }, options, (err) => {
-    if (err) return Logger.error(err), next(err)
+    if (err) return (Logger.error(err), next(err))
     return next()
   })
 }
 
-function updateCache(done) {
+function updateCache (done) {
   GithubActivity.find({}, (err, found) => {
     if (err) return done(err)
 
@@ -34,7 +34,7 @@ function updateCache(done) {
   })
 }
 
-module.exports = function updateActivityCache() {
+module.exports = function updateActivityCache () {
   Logger.info('Running job...')
 
   updateCache((err) => {

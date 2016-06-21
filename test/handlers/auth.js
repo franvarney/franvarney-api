@@ -1,8 +1,6 @@
 const {expect} = require('code')
 const Lab = require('lab')
 
-const DateSort = require('../../server/helpers/date-sort')
-
 const lab = exports.lab = Lab.script()
 const {describe, it} = lab
 

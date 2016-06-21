@@ -9,19 +9,19 @@ const Series = require('run-series')
 const EVENT_TYPES = ['IssuesEvent', 'PullRequestEvent', 'PushEvent']
 const PER_PAGE = 100
 
-function saveActivities(event, next) {
+function saveActivities (event, next) {
   let options = {
     upsert: true,
     setDefaultsOnInsert: true
   }
 
   GithubActivity.update({ id: event.id }, event, options, (err) => {
-    if (err) return Logger.error(err), next(err)
+    if (err) return (Logger.error(err), next(err))
     return next()
   })
 }
 
-function parseEvents(body, done) {
+function parseEvents (body, done) {
   let yesterday = DaysAgo(1)
 
   let events = body.filter((event) => {
@@ -47,7 +47,7 @@ function parseEvents(body, done) {
   }
 }
 
-function getEvents(page, done) {
+function getEvents (page, done) {
   if (page === 4) return done()
 
   let options = {
@@ -72,11 +72,11 @@ function getEvents(page, done) {
         if (err) return done(err)
         return getEvents(++page, done)
       })
-    } else return Logger.error(body.message), done()
+    } else return (Logger.error(body.message), done())
   })
 }
 
-module.exports = function getGithubActivity() {
+module.exports = function getGithubActivity () {
   Logger.info('Running job...')
 
   getEvents(1, (err) => {
