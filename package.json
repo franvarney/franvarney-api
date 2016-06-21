@@ -4,6 +4,8 @@
   "description": "The API for my personal site, franvarney.com",
   "main": "index.js",
   "scripts": {
+    "lint": "standard",
+    "pretest": "npm run lint",
     "start": "node index",
     "test": "LOG_LEVEL=none lab -cvv"
   },
