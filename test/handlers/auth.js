@@ -1,12 +1,13 @@
-import {expect} from 'code'
-import Lab from 'lab'
-import {Server} from 'hapi'
+const {expect} = require('code')
+const Lab = require('lab')
+
+const DateSort = require('../../server/helpers/date-sort')
 
 const lab = exports.lab = Lab.script()
-const {describe, it, before, after, beforeEach, afterEach} = lab
+const {describe, it} = lab
 
-import Auth from '../../server/handlers/auth'
-import Config from '../../config'
+const Auth = require('../../server/handlers/auth')
+const Config = require('../../config')
 
 let validate = Auth.validate.bind({ method: 'GET', path: '/test' })
 
@@ -19,7 +20,7 @@ describe('handlers/auth', () => {
           expect(isValid).to.be.true()
           expect(token.token).to.equal(Config.authToken)
 
-          done()
+          return done()
         })
       })
     })
@@ -31,7 +32,7 @@ describe('handlers/auth', () => {
           expect(isValid).to.be.false()
           expect(token.token).to.equal('secret2')
 
-          done()
+          return done()
         })
       })
     })
