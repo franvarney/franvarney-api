@@ -2,6 +2,7 @@ const Boom = require('boom')
 const Logger = require('franston')('handlers/post')
 const Slug = require('slug')
 
+const DateSort = require('../helpers/date-sort')
 const Post = require('../models/blog/post')
 
 exports.create = function (request, reply) {
@@ -44,16 +45,7 @@ exports.getAll = function (request, reply) {
   Post.find(query, (err, posts) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
 
-    posts = posts.sort((a, b) => {
-      a = new Date(a.createdAt)
-      b = new Date(b.createdAt)
-
-      if (a < b) return 1
-      if (a > b) return -1
-
-      return 0
-    })
-
+    posts.sort(DateSort.bind(null, 1))
     return /* Logger.debug(posts), */ reply(posts)
   })
 }
