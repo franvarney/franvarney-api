@@ -20,6 +20,8 @@ function saveActivityCounts (date, next) {
 }
 
 function updateCache (done) {
+  dateMap = {}
+
   GithubActivity.find({}, (err, found) => {
     if (err) return done(err)
 
