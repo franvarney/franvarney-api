@@ -1,6 +1,11 @@
 module.exports = {
   authToken: process.env.AUTH_TOKEN || 'secret',
   env: process.env.NODE_ENV,
+  flickr: {
+    key: process.env.FLICKR_KEY || '123abc',
+    secret: process.env.FLICKR_SECRET || 'secret',
+    userId: process.env.FLICKR_USER_ID || 'user'
+  },
   host: process.env.HOST || 'localhost',
   github: {
     apiUrl: 'https://api.github.com',
@@ -14,7 +19,7 @@ module.exports = {
   jobs: {
     frequency: {
       githubActivity: process.env.JOBS_FREQUENCY_GITHUB || '00 */1 * * * *',
-      updateCache: process.env.JOBS_FREQUENCY_CACHE || '00 */2 * * * *'
+      updateCache: process.env.JOBS_FREQUENCY_CACHE || '00 */1 * * * *'
     }
   },
   mongo: {
