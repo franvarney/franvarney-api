@@ -2,6 +2,8 @@ const Job = require('./handlers/job')
 const JobSchema = require('./schemas/job')
 const Home = require('./handlers/home')
 const Github = require('./handlers/github')
+const Photo = require('./handlers/photo')
+const PhotoSchema = require('./handlers/photo')
 const Ping = require('./handlers/ping')
 const Place = require('./handlers/place')
 const PlaceSchema = require('./schemas/place')
@@ -84,6 +86,18 @@ module.exports = [
         payload: JobSchema.update
       },
       handler: Job.update
+    }
+  },
+
+  {
+    method: 'GET',
+    path: '/photos',
+    config: {
+      auth: false,
+      handler: Photo.getAll,
+      validate: {
+        query: PhotoSchema.getAllQuery
+      }
     }
   },
 
