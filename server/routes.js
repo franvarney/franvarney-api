@@ -3,12 +3,12 @@ const JobSchema = require('./schemas/job')
 const Home = require('./handlers/home')
 const Github = require('./handlers/github')
 const Photo = require('./handlers/photo')
-const PhotoSchema = require('./handlers/photo')
+const PhotoSchema = require('./schemas/photo')
 const Ping = require('./handlers/ping')
 const Place = require('./handlers/place')
 const PlaceSchema = require('./schemas/place')
 const Post = require('./handlers/post')
-const PostSchema = require('./handlers/post')
+const PostSchema = require('./schemas/post')
 
 module.exports = [
   {
