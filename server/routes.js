@@ -172,7 +172,10 @@ module.exports = [
     method: 'GET',
     path: '/posts/{slug}',
     config: {
-      auth: false,
+      auth: {
+        strategy: 'simple',
+        mode: 'optional'
+      },
       handler: Post.get
     }
   },
@@ -181,11 +184,14 @@ module.exports = [
     method: 'GET',
     path: '/posts',
     config: {
-      auth: false,
+      auth: {
+        strategy: 'simple',
+        mode: 'optional'
+      },
+      handler: Post.getAll,
       validate: {
         query: PostSchema.getAllQuery
-      },
-      handler: Post.getAll
+      }
     }
   },
 

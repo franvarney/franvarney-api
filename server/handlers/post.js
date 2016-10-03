@@ -3,65 +3,83 @@ const Logger = require('franston')('handlers/post')
 const Slug = require('slug')
 
 const DateSort = require('../helpers/date-sort')
-const Post = require('../models/blog/post')
+const IsAuthorized = require('../helpers/is-authorized')
+const Post = require('../models/post')
 
 exports.create = function (request, reply) {
-  let {caption, content, image, summary, tags, title} = request.payload
+  Logger.debug('post.create')
 
-  let newPost = {
-    title,
-    slug: Slug(title, { lower: true }),
-    image,
-    caption,
-    summary,
-    content,
-    tags
-  }
+  const post = Object.assign({}, request.payload)
+  post.slug = Slug(`${post.category} ${title}`, { lower: true })
 
-  new Post(newPost).save((err, created) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
+  Post.create(post, (err, created) => {
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
 
-    Post.update(
-      { slug: { $ne: created.slug } },
-      { latest: false },
-      { multi: true },
-      (err, count) => {
-        if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
-        return /* Logger.debug(created), */ reply(created)
-      })
+    const query = {
+      slug: { $ne: created.slug }
+    }
+
+    Post.update(query, { isLatest: false }, { multi: true }, (err, count) => {
+      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+      return reply(created).code(201)
+    })
   })
 }
 
 exports.get = function (request, reply) {
-  Post.findOne({ slug: request.params.slug }, (err, post) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
-    return /* Logger.debug(post), */ reply(post)
+  Logger.debug('post.get')
+
+  const query = { slug: request.params.slug }
+
+  if (!IsAuthorized(request.auth)) query.isPreview = false
+
+  Post.findOne(query, (err, post) => {
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    if (!post) return reply(Boom.notFound('Post not found'))
+    return reply(post)
   })
 }
 
 exports.getAll = function (request, reply) {
-  let query = request.query && request.query.latest ? { latest: true } : {}
+  Logger.debug('post.getAll')
+
+  const query = {}
+
+  if (request.query && request.query.latest) query.isLatest = true
+  if (!IsAuthorized(request.auth)) query.isPreview = false
 
   Post.find(query, (err, posts) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
-
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
     posts.sort(DateSort.bind(null, 1))
-    return /* Logger.debug(posts), */ reply(posts)
+    return reply(posts)
   })
 }
 
 exports.remove = function (request, reply) {
+  Logger.debug('post.remove')
+
   Post.remove({ slug: request.params.slug }, (err) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
-    return /* Logger.debug(request.params.slug), */ reply()
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return reply().code(204)
   })
 }
 
 exports.update = function (request, reply) {
-  let {params, payload} = request
+  Logger.debug('post.update')
 
-  Post.update({ slug: params.slug }, payload, (err) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err.message)))
-    return /* Logger.debug(params.slug), */ reply(params.slug)
+  const query = {
+    slug: request.params.slug
+  }
+
+  const post = Object.assign({}, request.payload)
+  if (post.tags) {
+    post.$push = { tags: { $each: post.tags } }
+    delete post.tags
+  }
+  post.updatedAt = new Date().toISOString()
+
+  Post.update(query, post, (err) => {
+    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    return reply().code(204)
   })
 }
