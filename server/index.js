@@ -10,7 +10,7 @@ const Plugins = require('./plugins')
 const Routes = require('./routes')
 const UpdateCache = require('./jobs/update-activity-cache')
 
-let server = new Server()
+const server = new Server()
 
 Mongoose.connect(Config.mongo.url, (err) => {
   if (err) throw err
@@ -25,28 +25,28 @@ server.connection({
 
 server.register(Plugins, (err) => {
   if (err) throw err
-})
 
-server.auth.strategy('simple', 'bearer-access-token', {
-  allowQueryToken: true,
-  allowMultipleHeaders: false,
-  accessTokenName: 'auth_token',
-  validateFunc: Auth.validate
-})
+  server.auth.strategy('simple', 'bearer-access-token', {
+    accessTokenName: 'auth_token',
+    allowQueryToken: false,
+    allowMultipleHeaders: false,
+    validateFunc: Auth.validate
+  })
 
-server.auth.default({
-  strategy: 'simple'
-})
+  server.auth.default({
+    strategy: 'simple'
+  })
 
-server.start((err) => {
-  if (err) throw err
+  server.start((err) => {
+    if (err) throw err
 
-  Logger.info(`Server starting at ${server.info.uri}`)
+    Logger.info(`Server starting at ${server.info.uri}`)
 
-  server.route(Routes)
+    server.route(Routes)
 
-  CronJob(GithubActivity, Config.jobs.frequency.githubActivity)
-  CronJob(UpdateCache, Config.jobs.frequency.updateCache)
+    CronJob(GithubActivity, Config.jobs.frequency.githubActivity)
+    CronJob(UpdateCache, Config.jobs.frequency.updateCache)
+  })
 })
 
 module.exports = server
