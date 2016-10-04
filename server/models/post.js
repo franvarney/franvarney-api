@@ -10,7 +10,7 @@ const Post = new Mongoose.Schema({
   summary: { type: String, required: true },
   content: { type: String, required: true },
   tags: { type: Array, index: true, default: [] },
-  isLatest: { type: Boolean, index: true, default: true },
+  isLatest: { type: Boolean, index: true, default: false },
   isHtml: { type: Boolean, default: false },
   isPreview: { type: Boolean, default: true },
   __v: { type: Number, select: false }

@@ -8,7 +8,8 @@ exports.create = Joi.object({
   summary: Joi.string().required(),
   content: Joi.string().required(),
   tags: Joi.array(),
-  isHtml: Joi.boolean().default(false)
+  isHtml: Joi.boolean().default(false),
+  isLatest: Joi.boolean().default(false)
 }).options({ stripUnknown: true })
 
 exports.getAllQuery = Joi.object({
