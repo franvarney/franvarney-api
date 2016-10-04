@@ -10,19 +10,11 @@ exports.create = function (request, reply) {
   Logger.debug('post.create')
 
   const post = Object.assign({}, request.payload)
-  post.slug = Slug(`${post.category} ${title}`, { lower: true })
+  post.slug = Slug(`${post.category} ${post.title}`, { lower: true })
 
-  Post.create(post, (err, created) => {
+  new Post(post).save((err, created) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-
-    const query = {
-      slug: { $ne: created.slug }
-    }
-
-    Post.update(query, { isLatest: false }, { multi: true }, (err, count) => {
-      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-      return reply(created).code(201)
-    })
+    return reply(created).code(201)
   })
 }
 
@@ -76,10 +68,26 @@ exports.update = function (request, reply) {
     post.$push = { tags: { $each: post.tags } }
     delete post.tags
   }
-  post.updatedAt = new Date().toISOString()
+
+  let isLatest = false
+  if (post.hasOwnProperty('isLatest') && post.isLatest === true) {
+    isLatest = post.isLatest
+  }
+
+  post.updatedAt = new Date().toISOString() // TODO see if mongoose-timestamp should do this
 
   Post.update(query, post, (err) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return reply().code(204)
+
+    if (!isLatest) return reply().code(204)
+
+    const query = {
+      slug: { $ne: request.params.slug }
+    }
+
+    return Post.update(query, { isLatest: false }, { multi: true }, (err, count) => {
+      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+      return reply().code(204)
+    })
   })
 }
