@@ -42,8 +42,7 @@ exports.getAll = function (request, reply) {
 
   Post.find(query, (err, posts) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    posts.sort(DateSort.bind(null, 1))
-    return reply(posts)
+    return reply(posts.sort(DateSort.bind(null, -1)))
   })
 }
 
