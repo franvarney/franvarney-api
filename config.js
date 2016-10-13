@@ -16,9 +16,13 @@ module.exports = {
     apiKey: process.env.GOOGLE_API_KEY || '123abc',
     nearbySearchApiUrl: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
   },
+  foursquare: {
+    token: process.env.FOURSQUARE_TOKEN || 'token'
+  },
   jobs: {
     frequency: {
       githubActivity: process.env.JOBS_FREQUENCY_GITHUB || '00 */1 * * * *',
+      swarmPlaces: process.env.JOBS_FREQUENCY_SWARM || '00 */1 * * * *',
       updateCache: process.env.JOBS_FREQUENCY_CACHE || '00 */1 * * * *'
     }
   },
