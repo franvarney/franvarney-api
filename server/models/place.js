@@ -1,7 +1,8 @@
 const Mongoose = require('mongoose')
 const Timestamps = require('mongoose-timestamp')
 
-let Place = new Mongoose.Schema({
+const Place = new Mongoose.Schema({
+  id: { type: String, index: true },
   location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
@@ -9,13 +10,15 @@ let Place = new Mongoose.Schema({
   message: { type: String },
   place: {
     id: { type: String },
-    name: { type: String }
+    name: { type: String },
+    type: { type: String, default: 'Google' }
   },
   visitor: {
     message: { type: String },
     name: { type: String, required: true }
   },
-  isVisitor: { type: Boolean, default: true }
+  isVisitor: { type: Boolean, default: true },
+  __v: { type: Number, select: false }
 })
 
 Place.plugin(Timestamps)
