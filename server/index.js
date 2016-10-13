@@ -8,6 +8,7 @@ const CronJob = require('../server/jobs')
 const GithubActivity = require('./jobs/get-github-activity')
 const Plugins = require('./plugins')
 const Routes = require('./routes')
+const SwarmPlaces = require('./jobs/get-swarm-places')
 const UpdateCache = require('./jobs/update-activity-cache')
 
 const server = new Server()
@@ -45,6 +46,7 @@ server.register(Plugins, (err) => {
     server.route(Routes)
 
     CronJob(GithubActivity, Config.jobs.frequency.githubActivity)
+    CronJob(SwarmPlaces, Config.jobs.frequency.swarmPlaces)
     CronJob(UpdateCache, Config.jobs.frequency.updateCache)
   })
 })
