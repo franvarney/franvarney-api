@@ -102,6 +102,18 @@ module.exports = [
   },
 
   {
+    method: '*',
+    path: '/swarm/callback',
+    config: {
+      auth: false,
+      validate: {
+        query: PlaceSchema.callbackQuery
+      },
+      handler: Place.swarmCallback
+    }
+  },
+
+  {
     method: 'POST',
     path: '/places',
     config: {

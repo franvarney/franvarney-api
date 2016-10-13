@@ -1,9 +1,20 @@
 const Boom = require('boom')
 const Logger = require('franston')('handlers/places')
+const Request = require('request')
 const Wreck = require('wreck')
 
 const Config = require('../../config')
 const Place = require('../models/place')
+
+exports.swarmCallback = function (request, reply) {
+  Logger.info('Retrieving Swarm code or token')
+
+  if (request.payload && request.payload.access_token) {
+    return reply({ token: request.payload.access_token })
+  }
+
+  return reply()
+}
 
 exports.create = function (request, reply) {
   let {location, place, visitor} = request.payload
@@ -54,9 +65,9 @@ exports.getAll = function (request, reply) {
     query = { isVisitor: request.query.visitors }
   }
 
-  Place.find(query, (err, places) => {
+  Place.find(query).sort({ createdAt: -1 }).exec((err, places) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(places), */ reply(places)
+    return reply(places)
   })
 }
 
