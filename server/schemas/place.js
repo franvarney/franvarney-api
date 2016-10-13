@@ -19,6 +19,10 @@ exports.getAllQuery = Joi.object({
   visitors: Joi.boolean()
 }).options({ stripUnknown: true })
 
+exports.callbackQuery = Joi.object({
+  code: Joi.string()
+}).options({ stripUnknown: true })
+
 exports.response = Joi.array().items(Joi.object({
   location: Joi.object({
     latitude: Joi.number().required(),
