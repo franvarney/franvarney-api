@@ -58,15 +58,29 @@ exports.delete = function (request, reply) {
 }
 
 exports.getAll = function (request, reply) {
-  let query = {}
+  const query = {}
+  // TODO allow different sorting?
 
-  if (request.query.visitors !== null &&
-      request.query.visitors !== undefined) {
-    query = { isVisitor: request.query.visitors }
+  if (request.query.visitors == true ||
+      request.query.visitors == false) {
+    query.isVisitor = request.query.visitors
   }
 
   Place.find(query).sort({ createdAt: -1 }).exec((err, places) => {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+
+    // only return one checkin for each location for self
+    if (request.query.condensed == true) {
+      const unique = []
+      places = places.filter((checkin) => {
+        if (checkin.isVisitor === false) {
+          if (unique.indexOf(checkin.place.name) >= 0) return false
+          else unique.push(checkin.place.name)
+        }
+        return true
+      })
+    }
+
     return reply(places)
   })
 }
@@ -93,7 +107,7 @@ exports.search = {
           place.location = place.geometry.location
         })
 
-        return /* Logger.debug(payload.results), */ reply(payload.results)
+        return reply(payload.results)
       })
     }
   }
@@ -102,26 +116,9 @@ exports.search = {
 exports.update = function (request, reply) {
   Place.findById(request.params.id, function (err, place) {
     if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-
     if (!place) return (Logger.error('Place not found'), reply(Boom.notFound('Place not found')))
 
-    if (place.visitor && request.payload.visitor) {
-      place.visitor = Object.assign(place.visitor, request.payload.visitor)
-    }
-
-    if (place.place && request.payload.place) {
-      place.place = Object.assign(place.place, request.payload.place)
-    }
-
-    if (place.location && request.payload.location) {
-      place.location = Object.assign(place.location, request.payload.location)
-    }
-
-    if (place.isVisitor !== request.payload.isVisitor) {
-      place.isVisitor = request.payload.isVisitor
-    }
-
-    place.save((err) => {
+    Place.update({ _id: request.params.id }, request.payload, (err) => {
       if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
       return reply(place)
     })

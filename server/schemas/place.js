@@ -1,5 +1,9 @@
 const Joi = require('joi')
 
+exports.callbackQuery = Joi.object({
+  code: Joi.string()
+}).options({ stripUnknown: true })
+
 exports.create = Joi.object({
   location: Joi.object({
     latitude: Joi.number().required(),
@@ -11,16 +15,13 @@ exports.create = Joi.object({
   },
   visitor: {
     message: Joi.string().required(),
-    name: Joi.string().allow('', null)
+    name: Joi.string().default('Anonymous')
   }
 }).options({ stripUnknown: true })
 
 exports.getAllQuery = Joi.object({
-  visitors: Joi.boolean()
-}).options({ stripUnknown: true })
-
-exports.callbackQuery = Joi.object({
-  code: Joi.string()
+  visitors: Joi.boolean(),
+  condensed: Joi.boolean()
 }).options({ stripUnknown: true })
 
 exports.response = Joi.array().items(Joi.object({
@@ -39,3 +40,19 @@ exports.searchQuery = Joi.object({
   keyword: Joi.string()
 })
 
+exports.updatePayload = Joi.object({
+  location: {
+    latitude: Joi.number(),
+    longitude: Joi.number()
+  },
+  place: {
+    id: Joi.string(),
+    name: Joi.string(),
+    type: Joi.string().allow(['Swarm', 'Google'])
+  },
+  visitor: {
+    message: Joi.string(),
+    name: Joi.string().default('Anonymous')
+  },
+  isVisitor: Joi.boolean()
+}).options({ stripUnknown: true })
