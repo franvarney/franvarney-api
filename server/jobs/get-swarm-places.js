@@ -12,8 +12,6 @@ function savePlace (place, next) {
     setDefaultsOnInsert: true
   }
 
-  console.log(place)
-
   Place.update({ id: place.id }, place, options, (err) => {
     if (err) return (Logger.error(err), next(err))
     return next()
