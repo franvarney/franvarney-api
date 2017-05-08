@@ -12,7 +12,7 @@ The back-end for my personal website.
 - `JOBS_FREQUENCY_GITHUB`: the frequency at which to run the GitHub script that collects activities (cron format)
 - `HOST`: the host
 - `MONGO_URL`: a MongoDB connection string
-- `LOG_LEVEL`: see Winston for levels
+- `DEBUG`: debug level
 - `JOBS_FREQUENCY_CACHE`: the frequency at which to run the script that caches GitHub activities (cron format)
 - `FLICKR_KEY`: a Flickr API key
 - `FLICKR_SECRET`: a Flickr secret
