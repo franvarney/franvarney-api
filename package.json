@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "standard",
     "pretest": "npm run lint",
-    "start": "node index",
-    "test": "LOG_LEVEL=none lab -cvv"
+    "start": "DEBUG=* node index",
+    "test": "lab -cvv"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,8 @@
   "dependencies": {
     "boom": "4.1.0",
     "cron": "1.1.0",
+    "debug": "^2.6.6",
     "flickrapi": "0.6.0",
-    "franston": "0.2.0",
     "h2o2": "5.2.0",
     "hapi": "15.1.1",
     "hapi-auth-bearer-token": "4.3.0",
