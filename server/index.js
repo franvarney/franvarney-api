@@ -8,7 +8,7 @@ const CronJob = require('../server/jobs')
 const GithubActivity = require('./jobs/get-github-activity')
 const Plugins = require('./plugins')
 const Routes = require('./routes')
-const SwarmPlaces = require('./jobs/get-swarm-places')
+const SwarmPlaces = require('./jobs/get-swarm-checkins')
 const UpdateCache = require('./jobs/update-activity-cache')
 
 const server = new Server()
