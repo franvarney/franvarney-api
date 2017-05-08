@@ -1,5 +1,5 @@
 const Boom = require('boom')
-const Logger = require('franston')('handlers/places')
+const Debug = require('debug')('handlers/places')
 const Request = require('request')
 const Wreck = require('wreck')
 
@@ -7,7 +7,7 @@ const Config = require('../../config')
 const Place = require('../models/place')
 
 exports.swarmCallback = function (request, reply) {
-  Logger.info('Retrieving Swarm code or token')
+  Debug('Retrieving Swarm code or token')
 
   if (request.payload && request.payload.access_token) {
     return reply({ token: request.payload.access_token })
@@ -40,18 +40,18 @@ exports.create = function (request, reply) {
   }
 
   new Place(newPlace).save((err, created) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(created), */ reply(created).code(201)
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(created), reply(created).code(201)
   })
 }
 
 exports.delete = function (request, reply) {
   Place.findById(request.params.id, function (err, place) {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    if (!place) return (Logger.error('Place not found'), reply(Boom.notFound('Place not found')))
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    if (!place) return (Debug('Place not found'), reply(Boom.notFound('Place not found')))
 
     place.remove((err) => {
-      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+      if (err) return (Debug(err), reply(Boom.badRequest(err)))
       return reply().code(204)
     })
   })
@@ -67,7 +67,7 @@ exports.getAll = function (request, reply) {
   }
 
   Place.find(query).sort({ createdAt: -1 }).exec((err, places) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
 
     // only return one checkin for each location for self
     if (request.query.condensed == true) {
@@ -93,15 +93,15 @@ exports.search = {
       if (request.query.keyword) url = `${url}&rankby=distance&keyword=${request.query.keyword}`
       else url = `${url}&radius=5000`
 
-      Logger.debug(`Proxying to ${url}`)
+      Debug(`Proxying to ${url}`)
       return callback(null, url)
     },
     onResponse: function (err, response, request, reply) {
-      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+      if (err) return (Debug(err), reply(Boom.badRequest(err)))
 
       Wreck.read(response, { json: true }, (err, payload) => {
         if (payload && payload.status !== 'OK') err = payload.status
-        if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+        if (err) return (Debug(err), reply(Boom.badRequest(err)))
 
         payload.results.forEach((place) => {
           place.location = place.geometry.location
@@ -115,11 +115,11 @@ exports.search = {
 
 exports.update = function (request, reply) {
   Place.findById(request.params.id, function (err, place) {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    if (!place) return (Logger.error('Place not found'), reply(Boom.notFound('Place not found')))
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    if (!place) return (Debug('Place not found'), reply(Boom.notFound('Place not found')))
 
     Place.update({ _id: request.params.id }, request.payload, (err) => {
-      if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
+      if (err) return (Debug(err), reply(Boom.badRequest(err)))
       return reply(place)
     })
   })

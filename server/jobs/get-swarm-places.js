@@ -1,4 +1,4 @@
-const Logger = require('franston')('jobs/swarm-places')
+const Debug = require('debug')('jobs/swarm-places')
 const Request = require('request')
 const Series = require('run-series')
 
@@ -13,7 +13,7 @@ function savePlace (place, next) {
   }
 
   Place.update({ id: place.id }, place, options, (err) => {
-    if (err) return (Logger.error(err), next(err))
+    if (err) return (Debug(err), next(err))
     return next()
   })
 }
@@ -63,7 +63,7 @@ function getPlaces (done) {
   }
 
   Request(options, (err, response, body) => {
-    if (err) return (Logger.error(err), done(err))
+    if (err) return (Debug(err), done(err))
 
     if (response.statusCode === 200 && body.response.checkins.items.length) {
       parsePlaces(body.response.checkins.items, (err) => {
@@ -75,10 +75,10 @@ function getPlaces (done) {
 }
 
 module.exports = function getSwarmPlaces () {
-  Logger.info('Running job...')
+  Debug('Running job...')
 
   getPlaces((err) => {
-    if (err) return Logger.error(err)
-    return Logger.info('...completed')
+    if (err) return Debug(err)
+    return Debug('...completed')
   })
 }

@@ -1,5 +1,5 @@
 require('./server')
 
-var Logger = require('franston')('index')
+var Debug = require('debug')('index')
 
-Logger.info('Starting franvarney-api...')
+Debug('Starting franvarney-api...')

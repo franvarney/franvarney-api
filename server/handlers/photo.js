@@ -1,6 +1,6 @@
 const Boom = require('boom')
 const Flickr = require('flickrapi')
-const Logger = require('franston')('handlers/photo')
+const Debug = require('debug')('handlers/photo')
 
 const Config = require('../../config')
 
@@ -11,7 +11,7 @@ const options = {
 
 exports.getAll = function (request, reply) {
   Flickr.tokenOnly(options, (err, flickr) => { // TODO use authenticate method?
-    if (err) return Logger.error(err), reply(Boom.badRequest(err))
+    if (err) return Debug(err), reply(Boom.badRequest(err))
 
     flickr.people.getPhotos({
       api_key: Config.flickr.key,
@@ -20,8 +20,8 @@ exports.getAll = function (request, reply) {
       page: request.query.page || 1,
       per_page: request.query.limit || 20
     }, (err, photos)  => {
-      if (err) return Logger.error(err), reply(Boom.badRequest(err))
-      if (photos.stat !== 'ok') return Logger.error(photos.stat), reply(Boom.badRequest(photos.stat))
+      if (err) return Deubg(err), reply(Boom.badRequest(err))
+      if (photos.stat !== 'ok') return Debug(photos.stat), reply(Boom.badRequest(photos.stat))
       return reply(photos).code(200)
     })
   })

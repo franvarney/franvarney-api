@@ -1,5 +1,5 @@
 const Boom = require('boom')
-const Logger = require('franston')('handlers/job')
+const Debug = require('debug')('handlers/job')
 
 const Job = require('../models/job')
 
@@ -21,15 +21,15 @@ exports.create = function (request, reply) {
   }
 
   Job.create(newJob, (err, created) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(created), */ reply(created)
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(created), reply(created)
   })
 }
 
 exports.get = function (request, reply) {
   Job.findOne({ id: request.params.id }, (err, job) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(job), */ reply(job)
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(job), reply(job)
   })
 }
 
@@ -41,15 +41,15 @@ exports.getAll = function (request, reply) {
   }
 
   Job.find(query, (err, jobs) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(jobs), */ reply(jobs)
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(jobs), reply(jobs)
   })
 }
 
 exports.remove = function (request, reply) {
   Job.remove({ id: request.params.id }, (err) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(request.params.id), */ reply()
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(request.params.id), reply()
   })
 }
 
@@ -57,7 +57,7 @@ exports.update = function (request, reply) {
   let {params, payload} = request
 
   Job.update({ id: params.id }, payload, (err) => {
-    if (err) return (Logger.error(err), reply(Boom.badRequest(err)))
-    return /* Logger.debug(params.id), */ reply(params.id)
+    if (err) return (Debug(err), reply(Boom.badRequest(err)))
+    return Debug(params.id), reply(params.id)
   })
 }

@@ -1,5 +1,5 @@
 const {Server} = require('hapi')
-const Logger = require('franston')('server/index')
+const Debug = require('debug')('server/index')
 const Mongoose = require('mongoose')
 
 const Auth = require('./handlers/auth')
@@ -15,7 +15,7 @@ const server = new Server()
 
 Mongoose.connect(Config.mongo.url, (err) => {
   if (err) throw err
-  Logger.info(`Connected to ${Config.mongo.url}`)
+  Debug(`Connected to ${Config.mongo.url}`)
 })
 
 server.connection({
@@ -41,7 +41,7 @@ server.register(Plugins, (err) => {
   server.start((err) => {
     if (err) throw err
 
-    Logger.info(`Server starting at ${server.info.uri}`)
+    Debug(`Server starting at ${server.info.uri}`)
 
     server.route(Routes)
 

@@ -1,4 +1,4 @@
-const Logger = require('franston')('jobs/github-activity')
+const Debug = require('debug')('jobs/github-activity')
 const Request = require('request')
 
 const Config = require('../../config')
@@ -16,7 +16,7 @@ function saveActivities (event, next) {
   }
 
   GithubActivity.update({ id: event.id }, event, options, (err) => {
-    if (err) return (Logger.error(err), next(err))
+    if (err) return (Debug(err), next(err))
     return next()
   })
 }
@@ -72,15 +72,15 @@ function getEvents (page, done) {
         if (err) return done(err)
         return getEvents(++page, done)
       })
-    } else return (Logger.error(body.message), done())
+    } else return (Debug(body.message), done())
   })
 }
 
 module.exports = function getGithubActivity () {
-  Logger.info('Running job...')
+  Debug('Running job...')
 
   getEvents(1, (err) => {
-    if (err) return Logger.error(err)
-    return Logger.info('...completed')
+    if (err) return Debug(err)
+    return Debug('...completed')
   })
 }

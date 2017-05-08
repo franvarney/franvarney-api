@@ -1,4 +1,4 @@
-const Logger = require('franston')('jobs/update-cache')
+const Debug = require('debug')('jobs/update-cache')
 
 const GithubActivity = require('../models/github-activity')
 const GithubCache = require('../models/github-cache')
@@ -14,7 +14,7 @@ function saveActivityCounts (date, next) {
   }
 
   GithubCache.update({ date }, { date, total: count }, options, (err) => {
-    if (err) return (Logger.error(err), next(err))
+    if (err) return (Debug(err), next(err))
     return next()
   })
 }
@@ -37,10 +37,10 @@ function updateCache (done) {
 }
 
 module.exports = function updateActivityCache () {
-  Logger.info('Running job...')
+  Debug('Running job...')
 
   updateCache((err) => {
-    if (err) return Logger.error(`error: ${err.message}`)
-    return Logger.info('...completed')
+    if (err) return Debug(`error: ${err.message}`)
+    return Debug('...completed')
   })
 }
