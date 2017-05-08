@@ -2,11 +2,11 @@
   "name": "franvarney-api",
   "version": "1.8.0",
   "description": "The API for my personal site, franvarney.com",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "lint": "standard",
     "pretest": "npm run lint",
-    "start": "DEBUG=* node index",
+    "start": "DEBUG=* node server/",
     "test": "lab -cvv"
   },
   "repository": {

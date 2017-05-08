@@ -13,6 +13,8 @@ const UpdateCache = require('./jobs/update-activity-cache')
 
 const server = new Server()
 
+Debug('Starting franvarney-api...')
+
 Mongoose.connect(Config.mongo.url, (err) => {
   if (err) throw err
   Debug(`Connected to ${Config.mongo.url}`)
